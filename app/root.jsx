@@ -15,6 +15,7 @@ import resetStyles from '~/styles/reset.css?url';
 import appStyles from '~/styles/app.css?url';
 import tailwindCss from './styles/tailwind.css?url';
 import {PageLayout} from '~/components/PageLayout';
+import {AnnouncementBar} from '~/components/AnnouncementBar';
 import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
 
 /**
@@ -151,6 +152,7 @@ export function Layout({children}) {
         <Links />
       </head>
       <body>
+        <AnnouncementBar />
         {data ? (
           <Analytics.Provider
             cart={data.cart}

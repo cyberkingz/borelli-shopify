@@ -158,8 +158,9 @@ button.reset:hover:not(:has(> *)) {
 * --------------------------------------------------
 */
 .header {
+  background: var(--color-light);
+  border-bottom: 1px solid #e5e5e5;
   align-items: center;
-  background: #fff;
   display: flex;
   height: var(--header-height);
   padding: 0 1rem;
@@ -177,21 +178,43 @@ button.reset:hover:not(:has(> *)) {
 .header-menu-mobile {
   display: flex;
   flex-direction: column;
-  grid-gap: 1rem;
+  gap: 1.5rem;
+}
+
+.header-menu-mobile a {
+  font-size: 1.125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .header-menu-desktop {
   display: none;
-  grid-gap: 1rem;
-  @media (min-width: 45em) {
+  gap: 2rem;
+}
+
+@media (min-width: 640px) {
+  .header-menu-desktop {
     display: flex;
-    grid-gap: 1rem;
-    margin-left: 3rem;
   }
 }
 
+.header-menu-desktop a {
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
 .header-menu-item {
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #111827;
+  font-weight: 500;
   cursor: pointer;
+}
+
+.header-menu-item:hover {
+  opacity: 0.7;
 }
 
 .header-ctas {
@@ -199,6 +222,9 @@ button.reset:hover:not(:has(> *)) {
   display: flex;
   grid-gap: 1rem;
   margin-left: auto;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
 }
 
 /*
@@ -508,3 +534,122 @@ button.reset:hover:not(:has(> *)) {
 .account-logout {
   display: inline-block;
 }
+
+/*
+* --------------------------------------------------
+* Reset margins for hero heading
+* --------------------------------------------------
+*/
+.hero-heading {
+  margin: 0;
+  line-height: 1.1;
+  font-size: 3.5rem;
+}
+
+/*
+* --------------------------------------------------
+* Announcement Bar
+* --------------------------------------------------
+*/
+.announcement-bar {
+  background-color: #8B2332;
+  color: white;
+  text-align: center;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  position: relative;
+}
+
+.announcement-bar button {
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+.announcement-bar button:hover {
+  opacity: 1;
+}
+
+/*
+* --------------------------------------------------
+* Override default main margin for hero section
+* --------------------------------------------------
+*/
+.home-hero {
+  margin-left: -1rem;
+  margin-right: -1rem;
+  width: calc(100% + 2rem);
+}
+
+/*
+* --------------------------------------------------
+* Hide scrollbar but keep functionality
+* --------------------------------------------------
+*/
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari and Opera */
+}
+
+/*
+* --------------------------------------------------
+* Smooth scroll behavior
+* --------------------------------------------------
+*/
+.snap-x {
+  scroll-behavior: smooth;
+}
+
+/*
+* --------------------------------------------------
+* Arrow Sliding Animation
+* --------------------------------------------------
+*/
+@keyframes slideArrowDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.category-arrow {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.group:hover .category-arrow {
+  visibility: visible;
+  animation: slideArrowDown 0.5s ease-out forwards;
+}
+
+/*
+* --------------------------------------------------
+* Fade-in animation for category cards
+* --------------------------------------------------
+*/
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.category-card {
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+.category-card:nth-child(1) { animation-delay: 0.1s; }
+.category-card:nth-child(2) { animation-delay: 0.2s; }
+.category-card:nth-child(3) { animation-delay: 0.3s; }
+.category-card:nth-child(4) { animation-delay: 0.4s; }
