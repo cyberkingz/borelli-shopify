@@ -23,7 +23,7 @@ export async function loader(args) {
  */
 async function loadCriticalData({context, request}) {
   const paginationVariables = getPaginationVariables(request, {
-    pageBy: 4,
+    pageBy: 9,
   });
 
   const [{collections}] = await Promise.all([
@@ -52,19 +52,41 @@ export default function Collections() {
 
   return (
     <div className="collections">
-      <h1>Collections</h1>
-      <PaginatedResourceSection
-        connection={collections}
-        resourcesClassName="collections-grid"
-      >
-        {({node: collection, index}) => (
-          <CollectionItem
-            key={collection.id}
-            collection={collection}
-            index={index}
-          />
+      <div className="bg-gray-100 py-8 mb-8">
+        <div className="container mx-auto px-4">
+          <h1 className="text-4xl font-bold text-center mb-4">Collections</h1>
+          <p className="text-center text-gray-600 max-w-2xl mx-auto">
+            Browse our curated collections of premium clothing
+          </p>
+        </div>
+      </div>
+
+      <div className="container mx-auto px-4 pb-16">
+        {collections.nodes.length > 0 ? (
+          <PaginatedResourceSection
+            connection={collections}
+            resourcesClassName="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12"
+          >
+            {({node: collection, index}) => (
+              <CollectionItem
+                key={collection.id}
+                collection={collection}
+                index={index}
+              />
+            )}
+          </PaginatedResourceSection>
+        ) : (
+          <div className="text-center py-16">
+            <h2 className="text-2xl font-medium mb-6">No collections available</h2>
+            <Link 
+              to="/" 
+              className="inline-block bg-black text-white px-8 py-3 rounded hover:bg-gray-800 transition-colors"
+            >
+              Back to Home
+            </Link>
+          </div>
         )}
-      </PaginatedResourceSection>
+      </div>
     </div>
   );
 }
@@ -76,22 +98,49 @@ export default function Collections() {
  * }}
  */
 function CollectionItem({collection, index}) {
+  const collectionImage = collection.image || 
+    (collection.products.nodes[0]?.featuredImage);
+
+  const imageUrl = collectionImage?.originalSrc || collectionImage?.url;
+
   return (
     <Link
-      className="collection-item"
+      className="group block"
       key={collection.id}
       to={`/collections/${collection.handle}`}
       prefetch="intent"
     >
-      {collection?.image && (
-        <Image
-          alt={collection.image.altText || collection.title}
-          aspectRatio="1/1"
-          data={collection.image}
-          loading={index < 3 ? 'eager' : undefined}
-        />
-      )}
-      <h5>{collection.title}</h5>
+      <div className="relative overflow-hidden rounded-lg bg-gray-100">
+        {imageUrl ? (
+          <>
+            <div className="aspect-[16/9] overflow-hidden">
+              <img
+                src={imageUrl}
+                alt={collectionImage.altText || collection.title}
+                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                loading={index < 3 ? 'eager' : 'lazy'}
+              />
+            </div>
+            <div className="absolute inset-0 bg-black/30 transition-opacity duration-300 group-hover:bg-black/40" />
+            <div className="absolute inset-0 flex items-center justify-center z-10">
+              <div className="text-center">
+                <h2 className="text-2xl font-bold text-white px-4 drop-shadow-lg">
+                  {collection.title}
+                </h2>
+                {collection.description && (
+                  <p className="mt-2 text-sm text-white px-4 drop-shadow max-w-xs opacity-90">
+                    {collection.description}
+                  </p>
+                )}
+              </div>
+            </div>
+          </>
+        ) : (
+          <div className="aspect-[16/9] bg-gray-200 flex items-center justify-center">
+            <span className="text-gray-500">No image available</span>
+          </div>
+        )}
+      </div>
     </Link>
   );
 }
@@ -107,6 +156,20 @@ const COLLECTIONS_QUERY = `#graphql
       altText
       width
       height
+      originalSrc
+    }
+    description
+    products(first: 1) {
+      nodes {
+        featuredImage {
+          id
+          url
+          altText
+          width
+          height
+          originalSrc
+        }
+      }
     }
   }
   query StoreCollections(

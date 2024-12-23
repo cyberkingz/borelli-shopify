@@ -79,20 +79,40 @@ export default function Collection() {
 
   return (
     <div className="collection">
-      <h1>{collection.title}</h1>
-      <p className="collection-description">{collection.description}</p>
-      <PaginatedResourceSection
-        connection={collection.products}
-        resourcesClassName="products-grid"
-      >
-        {({node: product, index}) => (
-          <ProductItem
-            key={product.id}
-            product={product}
-            loading={index < 8 ? 'eager' : undefined}
-          />
+      <div className="bg-gray-100 py-8 mb-8">
+        <div className="container mx-auto px-4">
+          <h1 className="text-4xl font-bold text-center mb-4">{collection.title}</h1>
+          {collection.description && (
+            <p className="text-center text-gray-600 max-w-2xl mx-auto">{collection.description}</p>
+          )}
+        </div>
+      </div>
+      <div className="container mx-auto px-4">
+        {collection.products.nodes.length > 0 ? (
+          <PaginatedResourceSection
+            connection={collection.products}
+            resourcesClassName="products-grid"
+          >
+            {({node: product, index}) => (
+              <ProductItem
+                key={product.id}
+                product={product}
+                loading={index < 8 ? 'eager' : undefined}
+              />
+            )}
+          </PaginatedResourceSection>
+        ) : (
+          <div className="text-center py-16">
+            <h2 className="text-2xl font-medium mb-6">No products in this collection</h2>
+            <Link 
+              to="/" 
+              className="inline-block bg-black text-white px-8 py-3 rounded hover:bg-gray-800 transition-colors"
+            >
+              Back to Home
+            </Link>
+          </div>
         )}
-      </PaginatedResourceSection>
+      </div>
       <Analytics.CollectionView
         data={{
           collection: {

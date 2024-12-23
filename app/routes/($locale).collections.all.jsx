@@ -60,19 +60,41 @@ export default function Collection() {
 
   return (
     <div className="collection">
-      <h1>Products</h1>
-      <PaginatedResourceSection
-        connection={products}
-        resourcesClassName="products-grid"
-      >
-        {({node: product, index}) => (
-          <ProductItem
-            key={product.id}
-            product={product}
-            loading={index < 8 ? 'eager' : undefined}
-          />
+      <div className="bg-gray-100 py-8 mb-8">
+        <div className="container mx-auto px-4">
+          <h1 className="text-4xl font-bold text-center mb-4">All Products</h1>
+          <p className="text-center text-gray-600 max-w-2xl mx-auto">
+            Discover our complete collection of premium quality clothing
+          </p>
+        </div>
+      </div>
+
+      <div className="container mx-auto px-4">
+        {products.nodes.length > 0 ? (
+          <PaginatedResourceSection
+            connection={products}
+            resourcesClassName="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
+          >
+            {({node: product, index}) => (
+              <ProductItem
+                key={product.id}
+                product={product}
+                loading={index < 8 ? 'eager' : undefined}
+              />
+            )}
+          </PaginatedResourceSection>
+        ) : (
+          <div className="text-center py-16">
+            <h2 className="text-2xl font-medium mb-6">No products available</h2>
+            <Link 
+              to="/" 
+              className="inline-block bg-black text-white px-8 py-3 rounded hover:bg-gray-800 transition-colors"
+            >
+              Back to Home
+            </Link>
+          </div>
         )}
-      </PaginatedResourceSection>
+      </div>
     </div>
   );
 }
@@ -87,24 +109,33 @@ function ProductItem({product, loading}) {
   const variantUrl = useVariantUrl(product.handle);
   return (
     <Link
-      className="product-item"
+      className="group block"
       key={product.id}
       prefetch="intent"
       to={variantUrl}
     >
-      {product.featuredImage && (
-        <Image
-          alt={product.featuredImage.altText || product.title}
-          aspectRatio="1/1"
-          data={product.featuredImage}
-          loading={loading}
-          sizes="(min-width: 45em) 400px, 100vw"
-        />
-      )}
-      <h4>{product.title}</h4>
-      <small>
-        <Money data={product.priceRange.minVariantPrice} />
-      </small>
+      <div className="relative overflow-hidden rounded-lg bg-gray-100">
+        {product.featuredImage && (
+          <div className="aspect-[1/1.3] overflow-hidden">
+            <Image
+              alt={product.featuredImage.altText || product.title}
+              data={product.featuredImage}
+              loading={loading}
+              sizes="(min-width: 45em) 400px, 100vw"
+              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+            />
+          </div>
+        )}
+      </div>
+      <div className="mt-4">
+        <h4 className="text-lg font-medium group-hover:text-gray-800 transition-colors">{product.title}</h4>
+        <div className="mt-1">
+          <Money 
+            data={product.priceRange.minVariantPrice} 
+            className="text-lg font-semibold" 
+          />
+        </div>
+      </div>
     </Link>
   );
 }
