@@ -14,6 +14,7 @@ import {ProductDetails} from '~/components/ProductDetails';
 import {ProductFeatures} from '~/components/ProductFeatures';
 import {ProductSlider} from '~/components/ProductSlider';
 import {RecommendedProducts} from '~/components/RecommendedProducts';
+import {InsuranceFeatures} from '~/components/InsuranceFeatures';
 
 /**
  * @type {MetaFunction<typeof loader>}
@@ -158,7 +159,12 @@ export default function Product() {
       {/* Product Features Section */}
       <ProductFeatures />
 
+
       <RecommendedProducts products={newArrivals} />
+      
+      {/* Insurance Features Section */}
+      <InsuranceFeatures />
+      
     </div>
   );
 }
