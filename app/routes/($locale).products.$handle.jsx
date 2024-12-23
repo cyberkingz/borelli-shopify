@@ -11,6 +11,7 @@ import {
 import {ProductGallery} from '~/components/ProductGallery';
 import {ProductForm} from '~/components/ProductForm';
 import {ProductDetails} from '~/components/ProductDetails';
+import {ProductFeatures} from '~/components/ProductFeatures';
 
 /**
  * @type {MetaFunction<typeof loader>}
@@ -105,15 +106,28 @@ export default function Product() {
 
         {/* Right Column - Product Info */}
         <div>
-          <ProductForm
-            productOptions={productOptions}
-            selectedVariant={selectedVariant}
-            title={product.title}
-            vendor={product.vendor}
-          />
+          <div className="grid gap-8 lg:gap-12">
+            <ProductForm
+              productOptions={productOptions}
+              selectedVariant={selectedVariant}
+              title={product.title}
+              vendor={product.vendor}
+            />
+          </div>
+
+         
+
+          {/* Recommended Products */}
           <ProductDetails description={product.description} />
         </div>
+
+        
+
       </div>
+
+       {/* Product Features Section */}
+       <ProductFeatures />
+       
     </div>
   );
 }
