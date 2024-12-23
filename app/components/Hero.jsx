@@ -10,7 +10,7 @@ export function Hero() {
           <img
             src={heroImage}
             alt="Hero banner"
-            className="h-full w-full object-cover opacity-75"
+            className="h-full w-full object-cover opacity-100"
             loading="eager"
           />
         </div>
