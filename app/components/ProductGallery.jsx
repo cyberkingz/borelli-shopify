@@ -13,7 +13,7 @@ export function ProductGallery({images = [], title}) {
       {/* Main Image */}
       <div className="relative aspect-[3/4] w-full overflow-hidden bg-gray-100">
         {/* NEW STYLE Badge */}
-        <div className="absolute left-0 top-0 z-10">
+        <div className="absolute left-0 top-0 z-[5]">
           <span className="inline-block bg-black text-white text-xs px-2 py-1">NEW STYLE</span>
         </div>
 

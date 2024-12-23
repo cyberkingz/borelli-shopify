@@ -1,5 +1,5 @@
 import {Suspense} from 'react';
-import {Await, NavLink} from '@remix-run/react';
+import {Await, NavLink, useAsyncValue} from '@remix-run/react';
 import {useAnalytics} from '@shopify/hydrogen';
 import {useAside} from '~/components/Aside';
 import logo from '../assets/Borelli Logo.png';
@@ -73,14 +73,14 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
           />
         </div>
         <div className="w-40 flex justify-end items-center gap-4">
-          <NavLink 
+          {/* <NavLink 
             prefetch="intent" 
             to="/account" 
             className="text-gray-700 hover:text-gray-900"
             style={activeLinkStyle}
           >
             <UserIcon className="h-6 w-6" />
-          </NavLink>
+          </NavLink> */}
           <button 
             className="text-gray-700 hover:text-gray-900"
             onClick={() => {
@@ -89,19 +89,7 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
           >
             <MagnifyingGlassIcon className="h-6 w-6" />
           </button>
-          <button 
-            className="text-gray-700 hover:text-gray-900 relative"
-            onClick={() => {
-              // Add cart functionality
-            }}
-          >
-            <ShoppingBagIcon className="h-6 w-6" />
-            {cart?.totalQuantity > 0 && (
-              <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-black text-white text-xs flex items-center justify-center">
-                {cart.totalQuantity}
-              </span>
-            )}
-          </button>
+          <CartToggle cart={cart} />
         </div>
       </div>
 
@@ -184,9 +172,14 @@ export function HeaderMenu({
   const className = `header-menu-${viewport}`;
   const {close} = useAside();
 
+  const menuItems = (menu || FALLBACK_HEADER_MENU).items;
+  const hasHomeLink = menuItems.some(
+    (item) => item.title.toLowerCase() === 'home' || item.url === '/'
+  );
+
   return (
     <nav className={className} role="navigation">
-      {viewport === 'mobile' && (
+      {viewport === 'mobile' && !hasHomeLink && (
         <NavLink
           end
           onClick={onItemClick}
@@ -197,7 +190,7 @@ export function HeaderMenu({
           Home
         </NavLink>
       )}
-      {(menu || FALLBACK_HEADER_MENU).items.map((item) => {
+      {menuItems.map((item) => {
         if (!item.url) return null;
 
         // if the url is internal, we strip the domain
@@ -270,25 +263,14 @@ function SearchToggle() {
  * @param {{count: number | null}}
  */
 function CartBadge({count}) {
-  const {open} = useAside();
-  const {publish, shop, cart, prevCart} = useAnalytics();
-
   return (
-    <a
-      href="/cart"
-      onClick={(e) => {
-        e.preventDefault();
-        open('cart');
-        publish('cart_viewed', {
-          cart,
-          prevCart,
-          shop,
-          url: window.location.href || '',
-        });
-      }}
+    <div
+      className={`${
+        count ? 'bg-black text-white' : 'bg-gray-100'
+      } absolute bottom-1 right-1 text-[0.625rem] font-medium subpixel-antialiased h-3 min-w-[0.75rem] flex items-center justify-center leading-none text-center rounded-full w-auto px-[0.125rem] pb-px`}
     >
-      Cart {count === null ? <span>&nbsp;</span> : count}
-    </a>
+      <span>{count || 0}</span>
+    </div>
   );
 }
 
@@ -296,18 +278,41 @@ function CartBadge({count}) {
  * @param {Pick<HeaderProps, 'cart'>}
  */
 function CartToggle({cart}) {
+  const {open} = useAside();
+
   return (
-    <Suspense fallback={<CartBadge count={null} />}>
-      <Await resolve={cart}>
-        <CartBanner />
-      </Await>
-    </Suspense>
+    <div className="relative">
+      <button
+        onClick={() => {
+          open('cart');
+        }}
+        className="relative flex items-center justify-center w-8 h-8"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+          className="w-5 h-5"
+        >
+          <title>Bag</title>
+          <path
+            fillRule="evenodd"
+            d="M8.125 5a1.875 1.875 0 0 1 3.75 0v.375h-3.75V5Zm-1.25.375V5a3.125 3.125 0 1 1 6.25 0v.375h3.5c.69 0 1.25.56 1.25 1.25v11.25c0 .69-.56 1.25-1.25 1.25H3.375c-.69 0-1.25-.56-1.25-1.25V6.625c0-.69.56-1.25 1.25-1.25h3.5ZM3.375 19.125h13.25a.625.625 0 0 0 .625-.625V6.625a.625.625 0 0 0-.625-.625H3.375a.625.625 0 0 0-.625.625v11.875c0 .345.28.625.625.625Z"
+            clipRule="evenodd"
+          />
+        </svg>
+        <Suspense fallback={<CartBadge count={null} />}>
+          <Await resolve={cart}>
+            <CartBanner />
+          </Await>
+        </Suspense>
+      </button>
+    </div>
   );
 }
 
 function CartBanner() {
-  const originalCart = useAsyncValue();
-  const cart = useOptimisticCart(originalCart);
+  const cart = useAsyncValue();
   return <CartBadge count={cart?.totalQuantity ?? 0} />;
 }
 
