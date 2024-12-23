@@ -28,7 +28,8 @@ export function ProductFeatures() {
   ];
 
   return (
-    <div className="py-16 bg-white">
+    <div className="py-16 bg-white flex flex-col  gap-8 items-center">
+      <span className="text-3xl font-bold uppercase mb-4 text-center">Product Qualities</span>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {features.map((feature, index) => (

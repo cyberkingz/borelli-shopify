@@ -1,4 +1,4 @@
-import {defer} from '@shopify/remix-oxygen';
+import {defer, json} from '@shopify/remix-oxygen';
 import {useLoaderData} from '@remix-run/react';
 import {
   getSelectedProductOptions,
@@ -12,6 +12,8 @@ import {ProductGallery} from '~/components/ProductGallery';
 import {ProductForm} from '~/components/ProductForm';
 import {ProductDetails} from '~/components/ProductDetails';
 import {ProductFeatures} from '~/components/ProductFeatures';
+import {ProductSlider} from '~/components/ProductSlider';
+import {RecommendedProducts} from '~/components/RecommendedProducts';
 
 /**
  * @type {MetaFunction<typeof loader>}
@@ -29,14 +31,36 @@ export const meta = ({data}) => {
 /**
  * @param {LoaderFunctionArgs} args
  */
-export async function loader(args) {
-  // Start fetching non-critical data without blocking time to first byte
-  const deferredData = loadDeferredData(args);
+export async function loader({params, context, request}) {
+  const {handle} = params;
+  const {storefront} = context;
 
-  // Await the critical data required to render initial state of the page
-  const criticalData = await loadCriticalData(args);
+  const {product} = await storefront.query(PRODUCT_QUERY, {
+    variables: {
+      handle,
+      country: context.storefront.i18n.country,
+      language: context.storefront.i18n.language,
+      selectedOptions: getSelectedProductOptions(request),
+    },
+  });
 
-  return defer({...deferredData, ...criticalData});
+  if (!product?.id) {
+    throw new Response(null, {status: 404});
+  }
+
+  // Get recommended products
+  const {collection} = await storefront.query(RECOMMENDED_PRODUCTS_QUERY, {
+    variables: {
+      handle: 'recommended',
+      country: context.storefront.i18n.country,
+      language: context.storefront.i18n.language,
+    },
+  });
+
+  return json({
+    product,
+    newArrivals: collection?.products?.nodes || [],
+  });
 }
 
 /**
@@ -82,7 +106,7 @@ function loadDeferredData({context, params}) {
 }
 
 export default function Product() {
-  const {product} = useLoaderData();
+  const {product, newArrivals} = useLoaderData();
   const selectedVariant = useOptimisticVariant(
     product.selectedOrFirstAvailableVariant,
     getAdjacentAndFirstAvailableVariants(product),
@@ -125,9 +149,16 @@ export default function Product() {
 
       </div>
 
-       {/* Product Features Section */}
-       <ProductFeatures />
-       
+    
+    
+
+      {/* Recommended Products */}
+      <RecommendedProducts products={newArrivals} />
+
+      {/* Product Features Section */}
+      <ProductFeatures />
+
+      <RecommendedProducts products={newArrivals} />
     </div>
   );
 }
@@ -231,6 +262,40 @@ const PRODUCT_QUERY = `#graphql
     }
   }
   ${PRODUCT_FRAGMENT}
+`;
+
+const RECOMMENDED_PRODUCTS_QUERY = `#graphql
+  query RecommendedProducts(
+    $country: CountryCode
+    $language: LanguageCode
+    $handle: String!
+  ) @inContext(country: $country, language: $language) {
+    collection(handle: $handle) {
+      products(first: 8) {
+        nodes {
+          id
+          title
+          handle
+          priceRange {
+            minVariantPrice {
+              amount
+              currencyCode
+            }
+          }
+          images(first: 1) {
+            nodes {
+              id
+              url
+              altText
+              width
+              height
+              src
+            }
+          }
+        }
+      }
+    }
+  }
 `;
 
 /** @typedef {import('@shopify/remix-oxygen').LoaderFunctionArgs} LoaderFunctionArgs */
