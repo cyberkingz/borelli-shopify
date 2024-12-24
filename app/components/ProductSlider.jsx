@@ -2,7 +2,7 @@ import {Link} from '@remix-run/react';
 import {Image} from '@shopify/hydrogen';
 import {useRef} from 'react';
 
-export function ProductSlider({title, subtitle, products}) {
+export function ProductSlider({title, subtitle, products = []}) {
   const scrollContainerRef = useRef(null);
 
   const scroll = (direction) => {
@@ -28,6 +28,10 @@ export function ProductSlider({title, subtitle, products}) {
     }).format(amount);
   };
 
+  if (!products?.length) {
+    return null;
+  }
+
   return (
     <section className="w-full py-24">
       <div className="w-screen relative -ml-[calc((100vw-100%)/2)] mb-12">
@@ -52,37 +56,47 @@ export function ProductSlider({title, subtitle, products}) {
           ref={scrollContainerRef}
           className="flex overflow-x-auto gap-4 md:gap-6 pb-4 snap-x snap-mandatory scrollbar-hide pl-[calc((100vw-100%)/2)] pr-4"
         >
-          {products?.map((product) => (
-            <Link
-              key={product.id}
-              className="group relative flex-none w-[calc((100vw-32px)/2)] md:w-[calc((100vw-48px)/4)] snap-start"
-              to={`/products/${product.handle}`}
-            >
-              <div className="relative aspect-[2/3] overflow-hidden bg-gray-100">
-                <div className="absolute left-0 top-0 z-10">
-                  <span className="inline-block bg-black text-[10px] px-2 py-1 text-white uppercase tracking-wider">
-                    NEW STYLE
-                  </span>
+          {products.map((product) => {
+            const firstVariant = product.variants.nodes[0];
+            const {price, compareAtPrice} = firstVariant;
+            const isOnSale = compareAtPrice?.amount > price.amount;
+
+            return (
+              <Link
+                key={product.id}
+                className="group relative flex-none w-[calc((100vw-32px)/2)] md:w-[calc((100vw-48px)/4)] snap-start"
+                to={`/products/${product.handle}`}
+              >
+                <div className="relative aspect-[2/3] overflow-hidden bg-gray-100">
+                  <div className="absolute left-0 top-0 z-10">
+                    <span className="inline-block bg-black text-[10px] px-2 py-1 text-white uppercase tracking-wider">
+                      NEW STYLE
+                    </span>
+                  </div>
+                  <Image
+                    data={firstVariant.image}
+                    className="absolute h-full w-full object-cover object-center transition duration-300 group-hover:scale-105"
+                    sizes="(min-width: 768px) 25vw, 50vw"
+                  />
                 </div>
-                <Image
-                  data={product.images.nodes[0]}
-                  className="absolute h-full w-full object-cover object-center transition duration-300 group-hover:scale-105"
-                  sizes="(min-width: 768px) 25vw, 50vw"
-                />
-              </div>
-              <div className="mt-4 text-center">
-                <h3 className="text-sm font-medium uppercase">
-                  {product.title}
-                </h3>
-                <p className="mt-1">
-                  {formatPrice(
-                    product.priceRange.minVariantPrice.amount,
-                    product.priceRange.minVariantPrice.currencyCode
-                  )}
-                </p>
-              </div>
-            </Link>
-          ))}
+                <div className="mt-4 text-center">
+                  <h3 className="text-sm font-medium uppercase">
+                    {product.title}
+                  </h3>
+                  <div className="mt-1 flex items-center justify-center gap-2">
+                    <span className={isOnSale ? "text-red-600" : ""}>
+                      {formatPrice(price.amount, price.currencyCode)}
+                    </span>
+                    {isOnSale && (
+                      <span className="text-gray-500 line-through">
+                        {formatPrice(compareAtPrice.amount, compareAtPrice.currencyCode)}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </Link>
+            );
+          })}
         </div>
 
         <button 

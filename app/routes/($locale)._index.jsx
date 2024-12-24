@@ -48,40 +48,40 @@ export async function loader({context}) {
     collection => collection.handle === 'best-selling'
   );
 
-  // Get all products
-  const {products} = await storefront.query(PRODUCTS_QUERY);
-  
-  // Filter products to only show those from new-arrivals collection
-  const newArrivalsProducts = products.nodes.filter(product => 
-    product.collections.nodes.some(collection => collection.handle === 'new-arrivals')
+  const newArrivalsCollection = collections.nodes.find(
+    collection => collection.handle === 'new-arrivals'
   );
 
   return defer({
-    newArrivalsProducts,
     categories,
     bundleCollection,
-    bestsellerCollection
+    bestsellerCollection,
+    newArrivalsCollection,
   });
 }
 
 export default function Homepage() {
-  /** @type {LoaderReturnData} */
-  const data = useLoaderData();
+  const {
+    categories,
+    bundleCollection,
+    bestsellerCollection,
+    newArrivalsCollection,
+  } = useLoaderData();
 
   return (
     <div className="home">
       <Hero />
-      <ProductSlider 
-        title="NEW: AUTUMN-WINTER COLLECTION"
-        subtitle="The latest and greatest. See our new arrivals."
-        products={data.newArrivalsProducts}
-      />
-      <CategorySection categories={data.categories} />
-      {data.bundleCollection && (
-        <BundleSection collection={data.bundleCollection} />
+      {newArrivalsCollection && (
+        <ProductSlider
+          title="NEW ARRIVALS"
+          subtitle="Discover our latest additions"
+          products={newArrivalsCollection.products.nodes}
+        />
       )}
-      {data.bestsellerCollection && (
-        <BestsellerSection collection={data.bestsellerCollection} />
+      <CategorySection categories={categories} />
+      {bundleCollection && <BundleSection collection={bundleCollection} />}
+      {bestsellerCollection && (
+        <BestsellerSection collection={bestsellerCollection} />
       )}
     </div>
   );
@@ -96,51 +96,37 @@ const COLLECTIONS_QUERY = `#graphql
         title
         handle
         image {
-          id
           url
           altText
           width
           height
         }
-      }
-    }
-  }
-`;
-
-const PRODUCTS_QUERY = `#graphql
-  fragment ProductFields on Product {
-    id
-    title
-    handle
-    priceRange {
-      minVariantPrice {
-        amount
-        currencyCode
-      }
-    }
-    images(first: 1) {
-      nodes {
-        id
-        url
-        altText
-        width
-        height
-      }
-    }
-    collections(first: 5) {
-      nodes {
-        handle
-      }
-    }
-    tags
-    updatedAt
-  }
-  
-  query AllProducts ($country: CountryCode, $language: LanguageCode)
-    @inContext(country: $country, language: $language) {
-    products(first: 8, sortKey: CREATED_AT, reverse: true) {
-      nodes {
-        ...ProductFields
+        products(first: 8) {
+          nodes {
+            id
+            title
+            handle
+            variants(first: 1) {
+              nodes {
+                id
+                image {
+                  url
+                  altText
+                  width
+                  height
+                }
+                price {
+                  amount
+                  currencyCode
+                }
+                compareAtPrice {
+                  amount
+                  currencyCode
+                }
+              }
+            }
+          }
+        }
       }
     }
   }
