@@ -1,6 +1,6 @@
 import { Link } from '@remix-run/react';
 import { Suspense } from 'react';
-import heroImage from '../assets/hero-banner.webp';
+import heroImage from '../assets/hero-banner.jpg';
 
 export function Hero() {
   return (

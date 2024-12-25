@@ -1,7 +1,7 @@
 import {Link} from '@remix-run/react';
 import {useMatches} from '@remix-run/react';
 import {useState, useEffect} from 'react';
-import logoWhite from '../assets/Borelli-Logo-White.png';
+import logoWhite from '../assets/barker-logo-white.png';
 
 export function Footer({menu}) {
   const matches = useMatches();

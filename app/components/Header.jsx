@@ -2,7 +2,7 @@ import {Suspense} from 'react';
 import {Await, NavLink, useAsyncValue} from '@remix-run/react';
 import {useAnalytics} from '@shopify/hydrogen';
 import {useAside} from '~/components/Aside';
-import logo from '../assets/Borelli Logo.png';
+import logo from '../assets/barker-logo-black.png';
 import {
   UserIcon,
   MagnifyingGlassIcon,
