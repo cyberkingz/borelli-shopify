@@ -58,13 +58,13 @@ export function Footer({menu}) {
           <Link to="/" prefetch="intent" className="block mb-6">
             <img 
               src={logoWhite}
-              alt="Borelli" 
+              alt="BARKER LONDON" 
               className="h-10 invert brightness-0" 
             />
           </Link>
           <h3 className="text-white font-bold mb-4">About us</h3>
           <p className="text-gray-300 text-sm mb-6">
-            Established in 2018, BORELLI is all about standing out from the crowd and staying unique.
+            Established in 2018, BARKER LONDON is all about standing out from the crowd and staying unique.
           </p>
           <p className="text-gray-300 text-sm">
             In just a few years, the Amsterdam-based label is now part of the Dutch capital's
@@ -175,7 +175,7 @@ export function Footer({menu}) {
           <h3 className="text-white font-bold mb-4">JOIN THE CLUB</h3>
           <p className="text-gray-300 text-sm mb-4">
             Get exclusive access to new product releases, special offers and restocks. 
-            Join the BORELLI club.
+            Join the BARKER LONDON club.
           </p>
           <form className="mb-6">
             <div className="relative">
