@@ -61,7 +61,7 @@ export function ProductGallery({images = [], title}) {
         </div>
       </div>
 
-      <style jsx>{`
+      <style>{`
         .scrollbar-hide {
           -ms-overflow-style: none;  /* IE and Edge */
           scrollbar-width: none;  /* Firefox */

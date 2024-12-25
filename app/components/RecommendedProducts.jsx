@@ -51,9 +51,9 @@ export function RecommendedProducts({products}) {
                 <Link 
                   key={product.id} 
                   to={`/products/${product.handle}`}
-                  className="flex-shrink-0 w-72 group"
+                  className="group relative flex-none w-[calc((100vw-32px)/2)] md:w-[calc((100vw-48px)/4)] snap-start"
                 >
-                  <div className="relative aspect-[3/4] mb-4 bg-gray-100 overflow-hidden">
+                  <div className="relative aspect-[2/3] overflow-hidden bg-gray-100">
                     {/* Recommended Badge */}
                     <div className="absolute left-0 top-0 z-10 leading-none">
                       <span className="inline-block bg-[#545252] text-white text-xs px-2 py-1">
@@ -62,10 +62,13 @@ export function RecommendedProducts({products}) {
                     </div>
                     
                     {product.images?.nodes[0] && (
+                      
                       <Image
                         data={product.images.nodes[0]}
                         alt={product.title}
-                        className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
+                        width={1000}
+                        height={1000}
+                        className="absolute h-full w-full object-cover object-center transition duration-300 group-hover:scale-105"
                       />
                     )}
                   </div>
@@ -93,7 +96,7 @@ export function RecommendedProducts({products}) {
           </div>
         </div>
 
-        <style jsx>{`
+        <style>{`
           .scrollbar-hide {
             -ms-overflow-style: none;
             scrollbar-width: none;
