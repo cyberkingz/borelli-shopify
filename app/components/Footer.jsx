@@ -51,7 +51,7 @@ export function Footer({menu}) {
   };
 
   return (
-    <footer className="bg-[#1D1D1D] text-white">
+    <footer className="bg-[#2B555A] text-white">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-8 px-6 py-12 max-w-[1800px] mx-auto">
         {/* About Section */}
         <div>
