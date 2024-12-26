@@ -16,6 +16,7 @@ import {ProductSlider} from '~/components/ProductSlider';
 import {RecommendedProducts} from '~/components/RecommendedProducts';
 import {InsuranceFeatures} from '~/components/InsuranceFeatures';
 import {ImageSlider} from '~/components/ImageSlider';
+import { ProductPageProductSlider } from '~/components/ProductPageProductSlider';
 
 /**
  * @type {MetaFunction<typeof loader>}
@@ -56,10 +57,28 @@ export async function loader({params, context, request}) {
     },
   });
 
-  return json({
-    product,
-    newArrivals: collection?.products?.nodes || [],
-  });
+  try {
+    // Fetch the collection first
+    const {collection: poloCollection} = await storefront.query(COLLECTION_QUERY);
+    
+    let poloProducts = [];
+    if (poloCollection) {
+      poloProducts = poloCollection.products.nodes;
+    }
+
+    return json({
+      product,
+      newArrivals: collection?.products?.nodes || [],
+      poloProducts,
+    });
+  } catch (error) {
+    console.error('Error fetching collection products:', error);
+    return json({
+      product,
+      newArrivals: collection?.products?.nodes || [],
+      poloProducts: [],
+    });
+  }
 }
 
 /**
@@ -105,7 +124,7 @@ function loadDeferredData({context, params}) {
 }
 
 export default function Product() {
-  const {product, newArrivals} = useLoaderData();
+  const {product, newArrivals, poloProducts} = useLoaderData();
   const selectedVariant = useOptimisticVariant(
     product.selectedOrFirstAvailableVariant,
     getAdjacentAndFirstAvailableVariants(product),
@@ -151,8 +170,8 @@ export default function Product() {
     
     
 
-      {/* Recommended Products */}
-      <RecommendedProducts products={newArrivals} />
+      {/* Products Slider */}
+      <ProductPageProductSlider products={poloProducts} />
 
       {/* Product Features Section */}
       <ProductFeatures />
@@ -296,6 +315,69 @@ const RECOMMENDED_PRODUCTS_QUERY = `#graphql
               width
               height
               src
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+const COLLECTIONS_QUERY = `#graphql
+  query Collections {
+    collections(first: 100) {
+      nodes {
+        id
+        handle
+      }
+    }
+  }
+`;
+
+const COLLECTION_PRODUCTS_QUERY = `#graphql
+  query CollectionProducts($handle: String!) {
+    collection(handle: $handle) {
+      products(first: 8) {
+        nodes {
+          id
+          title
+          handle
+          featuredImage {
+            url
+            altText
+            width
+            height
+          }
+          priceRange {
+            minVariantPrice {
+              amount
+              currencyCode
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+const COLLECTION_QUERY = `#graphql
+  query CollectionWithProducts {
+    collection(handle: "polos-t-shirts") {
+      products(first: 8) {
+        nodes {
+          id
+          title
+          handle
+          featuredImage {
+            url
+            altText
+            width
+            height
+          }
+          priceRange {
+            minVariantPrice {
+              amount
+              currencyCode
             }
           }
         }
