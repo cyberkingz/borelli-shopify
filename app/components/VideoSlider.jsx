@@ -19,7 +19,22 @@ export function VideoSlider() {
   useEffect(() => {
     // Initial center alignment
     if (sliderRef.current) {
-      sliderRef.current.scrollLeft = 0;
+      const isMobile = window.innerWidth <= 768;
+      if (isMobile) {
+        // Start from second video on mobile
+        setCurrentIndex(1);
+        const videoWidth = 253; // Width of main video
+        const gap = 32; // 8rem gap
+        // Calculate exact position for second video
+        const initialScrollLeft = videoWidth + gap;
+        requestAnimationFrame(() => {
+          sliderRef.current.scrollLeft = initialScrollLeft;
+        });
+      } else {
+        // Desktop behavior remains the same
+        setCurrentIndex(2);
+        sliderRef.current.scrollLeft = 0;
+      }
     }
 
     return () => {
@@ -75,10 +90,10 @@ export function VideoSlider() {
   };
 
   return (
-    <div className="relative w-full my-16">
+    <div className="relative w-full my-16 pb-4">
       
       {/* Headline */}
-      <div className="flex flex-col items-center mb-8 gap-2 md:gap-4">
+      <div className="flex flex-col items-center mb-16 gap-2 md:gap-4">
         
         <div className="flex flex-row items-center gap-2 md:gap-4">
           <img src={leftBar} alt="left bar" className="w-[60px] md:w-[100px]" />
@@ -99,7 +114,8 @@ export function VideoSlider() {
         style={{ 
           scrollBehavior: 'smooth',
           paddingLeft: '20px',
-          paddingRight: 'calc(50% - 126px)'
+          paddingRight: 'calc(50% - 126px)',
+          height: '450px' // Fixed height based on the largest video height
         }}
       >
         {videos.map((video, index) => (
@@ -111,6 +127,10 @@ export function VideoSlider() {
                 ? 'w-[253px] h-[450px] scale-100 opacity-100 z-10' 
                 : 'w-[225px] h-[400px] scale-90 opacity-70 z-0 hover:opacity-90'
             }`}
+            style={{
+              transform: `${index === currentIndex ? 'scale(1)' : 'scale(0.9)'}`,
+              transformOrigin: 'center center'
+            }}
           >
             <video 
               className="absolute inset-0 w-full h-full object-cover"
