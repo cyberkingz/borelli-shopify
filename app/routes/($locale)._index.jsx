@@ -5,6 +5,7 @@ import {ProductSlider} from '~/components/ProductSlider';
 import {CategorySection} from '~/components/CategorySection';
 import {BundleSection} from '~/components/BundleSection';
 import {BestsellerSection} from '~/components/BestsellerSection';
+import {VideoSlider} from '~/components/VideoSlider';
 
 /**
  * @type {MetaFunction}
@@ -83,6 +84,7 @@ export default function Homepage() {
       {bestsellerCollection && (
         <BestsellerSection collection={bestsellerCollection} />
       )}
+      <VideoSlider />
     </div>
   );
 }
