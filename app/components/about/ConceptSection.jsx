@@ -1,5 +1,5 @@
 import {Image} from '@shopify/hydrogen';
-import conceptImage from '../../assets/about-us/FROM-CONCEPT-TO-CREATION.png';
+import conceptImage from '../../assets/about-us/FROM-CONCEPT-TO-CREATION.jpg';
 
 export function ConceptSection() {
   return (

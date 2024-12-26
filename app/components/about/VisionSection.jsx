@@ -1,5 +1,5 @@
 import {Image} from '@shopify/hydrogen';
-import visionImage from '../../assets/about-us/OUR-VISION.png';
+import visionImage from '../../assets/about-us/OUR-VISION.jpg';
 
 export function VisionSection() {
   return (

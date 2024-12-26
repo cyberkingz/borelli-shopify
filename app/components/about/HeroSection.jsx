@@ -1,5 +1,5 @@
 import {Image} from '@shopify/hydrogen';
-import desktopBanner from '../../assets/about-us/desktop-banner.png';
+import desktopBanner from '../../assets/about-us/desktop-banner.jpg';
 import mobileBanner from '../../assets/about-us/mobile-banner.png';
 
 export function HeroSection() {
@@ -10,7 +10,7 @@ export function HeroSection() {
         <picture>
           <source media="(min-width: 768px)" srcSet={desktopBanner} />
           <Image
-            src={mobileBanner}
+            src={desktopBanner}
             className="w-full h-full object-cover"
             alt="Borelli clothing banner"
           />

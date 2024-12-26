@@ -97,7 +97,7 @@ export function VideoSlider() {
         
         <div className="flex flex-row items-center gap-2 md:gap-4">
           <img src={leftBar} alt="left bar" className="w-[60px] md:w-[100px]" />
-          <span className="text-2xl md:text-4xl text-center uppercase font-bold">the old money <br/>community</span>
+          <span className="text-2xl md:text-4xl text-center uppercase font-bold">The Barker's<br/>community</span>
           <img src={rightBar} alt="left bar" className="w-[60px] md:w-[100px]" />
         </div>
 
@@ -171,3 +171,4 @@ export function VideoSlider() {
     </div>
   );
 }
+

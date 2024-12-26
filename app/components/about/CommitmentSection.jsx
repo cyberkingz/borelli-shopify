@@ -1,5 +1,5 @@
 import {Image} from '@shopify/hydrogen';
-import commitmentImage from '../../assets/about-us/OUR-ONGOING-COMMITMENT.png';
+import commitmentImage from '../../assets/about-us/OUR-ONGOING-COMMITMENT.jpg';
 
 export function CommitmentSection() {
   return (

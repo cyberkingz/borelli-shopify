@@ -15,17 +15,15 @@ import {ProductFeatures} from '~/components/ProductFeatures';
 import {ProductSlider} from '~/components/ProductSlider';
 import {RecommendedProducts} from '~/components/RecommendedProducts';
 import {InsuranceFeatures} from '~/components/InsuranceFeatures';
+import {ImageSlider} from '~/components/ImageSlider';
 
 /**
  * @type {MetaFunction<typeof loader>}
  */
 export const meta = ({data}) => {
   return [
-    {title: `Hydrogen | ${data?.product.title ?? ''}`},
-    {
-      rel: 'canonical',
-      href: `/products/${data?.product.handle}`,
-    },
+    {title: data?.product?.title ? `Borelli | ${data.product.title}` : 'Borelli'},
+    {description: data?.product?.description ?? 'Borelli product page'}
   ];
 };
 
@@ -164,6 +162,8 @@ export default function Product() {
       
       {/* Insurance Features Section */}
       <InsuranceFeatures />
+
+      <ImageSlider />
       
     </div>
   );
