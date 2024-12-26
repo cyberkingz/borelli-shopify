@@ -54,12 +54,13 @@ export function ImageSlider() {
           {displayImages.map((image, index) => (
             <div 
               key={index}
-              className="w-[300px] flex-shrink-0"
+              className="w-[350px] flex-shrink-0 rounded-none overflow-hidden"
             >
               <img 
                 src={image}
                 alt={`Community image ${(index % images.length) + 1}`}
-                className="w-full h-[300px] object-cover"
+                className="w-full h-[350px] object-cover rounded-none"
+                style={{ borderRadius: 0 }}
               />
             </div>
           ))}
