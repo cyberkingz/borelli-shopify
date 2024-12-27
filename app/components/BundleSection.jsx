@@ -5,7 +5,7 @@ export function BundleSection({collection}) {
   return (
     <section className="w-full py-16 px-4 ">
       <div className="max-w-[1800px] mx-auto bg-[#906e5c36]">
-        <div className="grid md:grid-cols-2 gap-8 items-center">
+        <div className="grid md:grid-cols-2 gap-0 items-center">
           {/* Image - Order changed for mobile */}
           <div className="relative aspect-square w-full overflow-hidden md:order-last">
             {collection.image && (

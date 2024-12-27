@@ -4,8 +4,8 @@ import {ChevronRightIcon} from '@heroicons/react/24/outline';
 
 export function CategorySection({categories}) {
   return (
-    <section className="py-16 px-4">
-      <span className="text-3xl font-bold uppercase mb-4">SHOP OUR TOP CATEGORIES</span>
+    <section className="py-16 px-4 flex flex-col ">
+      <span className="text-3xl font-bold uppercase mb-4 text-center px-0 lg:px-5 lg:text-left">SHOP OUR TOP CATEGORIES</span>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
         {categories.map((category) => (
           <Link 
