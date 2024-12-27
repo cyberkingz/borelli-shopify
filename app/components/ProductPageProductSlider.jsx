@@ -35,9 +35,9 @@ export function ProductPageProductSlider({products = []}) {
   return (
     <section className="w-full py-24">
       <div className="w-screen relative -ml-[calc((100vw-100%)/2)] mb-12">
-        <div className="pl-[calc((100vw-100%)/2)] ml-4 pt-4">
-          <span className="text-3xl font-bold uppercase mb-4">Polos & T-Shirts Collection</span>
-          <p className="text-gray-600">Discover our latest collection of premium polos and t-shirts</p>
+        <div className="pl-[calc((100vw-100%)/2)] ml-4 pt-4 px-4 lg:px-0 flex flex-col justify-start lg:justify-center align-center lg:align-start">
+          <span className="text-3xl font-bold uppercase mb-4 text-center lg:text-left">Shop the biggest sale of the year</span>
+          <p className="text-gray-600 text-center lg:text-left">Discover our latest collection of premium clothing</p>
         </div>
       </div>
 

@@ -362,7 +362,7 @@ const COLLECTION_PRODUCTS_QUERY = `#graphql
 
 const COLLECTION_QUERY = `#graphql
   query CollectionWithProducts {
-    collection(handle: "polos-t-shirts") {
+    collection(handle: "Bottoms") {
       products(first: 8) {
         nodes {
           id
