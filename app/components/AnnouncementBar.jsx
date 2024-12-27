@@ -10,7 +10,7 @@ export function AnnouncementBar() {
           </button>
           
           <p className="text-sm font-medium">
-            FREE SHIPPING ON ALL ORDERS ABOVE €150
+            FREE SHIPPING ON ORDERS ABOVE €150
           </p>
           
           <button>
