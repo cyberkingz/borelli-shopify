@@ -9,21 +9,52 @@ import rightBar from '../assets/video-slider/right-bar.png';
 
 export function ImageSlider() {
   const [position, setPosition] = useState(0);
-
-  useEffect(() => {
-    const animate = () => {
-      setPosition(prev => prev - 1);
-    };
-
-    const animationInterval = setInterval(animate, 16);
-    return () => clearInterval(animationInterval);
-  }, []);
+  const [isResetting, setIsResetting] = useState(false);
+  const sliderRef = useRef(null);
 
   // Create base array of images
   const images = [image1, image2, image3, image4, image5];
+  const imageWidth = typeof window !== 'undefined' ? window.innerWidth / 4.5 : 300;
   
-  // Create a long sequence of images that appears infinite
+  // Create three sets of images for smooth infinite scroll
   const displayImages = [...images, ...images, ...images];
+
+  useEffect(() => {
+    let animationId;
+    let lastTimestamp = 0;
+    const speed = 1; // pixels per frame
+
+    const animate = (timestamp) => {
+      if (!lastTimestamp) lastTimestamp = timestamp;
+      const elapsed = timestamp - lastTimestamp;
+      
+      if (elapsed > 16) { // Cap at roughly 60fps
+        setPosition(prev => {
+          const newPosition = prev - speed;
+          const maxScroll = -(images.length * imageWidth);
+          
+          // If we've scrolled past one set of images
+          if (newPosition <= maxScroll) {
+            // Reset to start but adjust for the overshoot
+            const overshoot = newPosition - maxScroll;
+            return overshoot;
+          }
+          
+          return newPosition;
+        });
+        lastTimestamp = timestamp;
+      }
+      
+      animationId = requestAnimationFrame(animate);
+    };
+
+    animationId = requestAnimationFrame(animate);
+    return () => {
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+      }
+    };
+  }, [images.length, imageWidth]);
 
   return (
     <section className="w-full my-24">
@@ -45,10 +76,11 @@ export function ImageSlider() {
       {/* Full-width slider container */}
       <div className="w-screen relative -ml-[50vw] left-1/2 overflow-hidden">
         <div 
+          ref={sliderRef}
           className="flex gap-2"
           style={{ 
             transform: `translateX(${position}px)`,
-            transition: 'transform 100ms linear',
+            transition: isResetting ? 'none' : 'transform 100ms linear',
             width: 'max-content'
           }}
         >
