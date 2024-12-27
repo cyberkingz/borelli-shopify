@@ -25,9 +25,9 @@ export async function loader({context}) {
 
   const categoryTitles = [
     'Polos & T-Shirts',
-    'Denim Jeans',
-    'Layering',
-    'Trousers'
+    'Shoes',
+    'Wool',
+    'Bottoms'
   ];
 
   const categories = collections.nodes
