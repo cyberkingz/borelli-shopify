@@ -229,7 +229,7 @@ export function Footer({footer, primaryDomainUrl, publicStoreDomain}) {
       {/* Bottom Bar */}
       <div>
         <div className="max-w-[1800px] mx-auto px-6 py-6 flex justify-between sm:flex-row flex-col items-center gap-4">
-          <span className="text-gray-300">&copy; 2024, BORELLI</span>
+          <span className="text-gray-300">&copy; 2024, BARKER LONDON</span>
           <div className="flex items-center space-x-4">
             {Object.values(paymentIcons).map((PaymentIcon, index) => (
               <span key={index} className="flex">

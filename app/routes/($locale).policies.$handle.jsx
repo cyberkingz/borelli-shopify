@@ -5,7 +5,7 @@ import {Link, useLoaderData} from '@remix-run/react';
  * @type {MetaFunction<typeof loader>}
  */
 export const meta = ({data}) => {
-  return [{title: `Hydrogen | ${data?.policy.title ?? ''}`}];
+  return [{title: `Barker | ${data?.policy.title ?? ''}`}];
 };
 
 /**
@@ -45,15 +45,25 @@ export default function Policy() {
   const {policy} = useLoaderData();
 
   return (
-    <div className="policy">
-      <br />
-      <br />
-      <div>
-        <Link to="/policies">← Back to Policies</Link>
+    <div className="max-w-[1000px] mx-auto px-4 py-12 md:py-16">
+      <div className="mb-8">
+        <Link 
+          to="/policies" 
+          className="inline-flex items-center text-gray-600 hover:text-black transition-colors"
+        >
+          <span className="mr-2">←</span>
+          Back to Policies
+        </Link>
       </div>
-      <br />
-      <h1>{policy.title}</h1>
-      <div dangerouslySetInnerHTML={{__html: policy.body}} />
+      
+      <h1 className="text-4xl md:text-5xl font-bold mb-8 text-center">
+        {policy.title}
+      </h1>
+      
+      <div 
+        className="prose prose-lg max-w-none"
+        dangerouslySetInnerHTML={{__html: policy.body}} 
+      />
     </div>
   );
 }
