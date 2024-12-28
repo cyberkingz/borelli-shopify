@@ -24,6 +24,7 @@ export function CartSummary({cart, layout}) {
     </div>
   );
 }
+
 /**
  * @param {{checkoutUrl?: string}}
  */
@@ -31,14 +32,19 @@ function CartCheckoutActions({checkoutUrl}) {
   if (!checkoutUrl) return null;
 
   return (
-    <div className='pb-4'>
-      <button href={checkoutUrl} target="_self"
-        className="bg-[#2B555A] text-white w-full rounded-none py-3 uppercase font-medium hover:opacity-90 transition-opacity"
-
+    <div className="pb-4">
+      <a
+        href={checkoutUrl}
+        target="_self"
+        className="block bg-[#2B555A] text-white w-full rounded-none py-3 uppercase font-medium hover:opacity-90 transition-opacity text-center"
+        onClick={(e) => {
+          if (window.getComputedStyle(e.currentTarget).opacity === '0.5') {
+            e.preventDefault();
+          }
+        }}
       >
-        <p>Continue to Checkout &rarr;</p>
-      </button>
-      <br />
+        Continue to Checkout &rarr;
+      </a>
     </div>
   );
 }
