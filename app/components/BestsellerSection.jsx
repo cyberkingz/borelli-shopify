@@ -3,14 +3,14 @@ import {Image} from '@shopify/hydrogen';
 
 export function BestsellerSection({collection}) {
   return (
-    <section className="relative w-screen -ml-[50vw] left-1/2 h-[450px] md:h-[600px] my-16 mt-8">
+    <section className="relative w-screen -ml-[50vw] left-1/2 h-[650px] md:h-[600px] my-16 mt-8">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 w-full h-full">
         <div className="absolute inset-0 bg-black/10 z-10"></div>
         {collection?.image && (
           <Image
             data={collection.image}
-            className="w-full h-full object-cover ![border-radius:0] md:object-[center_center] object-[65%_center]"
+            className="w-full h-full object-cover ![border-radius:0] md:object-[center_center] object-[90%_center]"
             sizes="100vw"
             loading="lazy"
           />
