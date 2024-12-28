@@ -1,4 +1,4 @@
-import {useOptimisticCart} from '@shopify/remix-oxygen';
+import {useOptimisticCart} from '@shopify/hydrogen';
 import {Link} from '@remix-run/react';
 import {useAside} from '~/components/Aside';
 import {CartLineItem} from '~/components/CartLineItem';
