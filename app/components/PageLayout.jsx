@@ -35,11 +35,15 @@ export function PageLayout({
         />
       )}
       <main>{children}</main>
-      <Footer
-        footer={footer}
-        header={header}
-        publicStoreDomain={publicStoreDomain}
-      />
+      <Suspense>
+            <Await resolve={footer}>
+              <Footer
+                footer={footer}
+                publicStoreDomain={publicStoreDomain}
+              />
+            </Await>
+          </Suspense>
+     
     </Aside.Provider>
   );
 }
