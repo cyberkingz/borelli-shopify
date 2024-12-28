@@ -39,6 +39,7 @@ export function PageLayout({
             <Await resolve={footer}>
               <Footer
                 footer={footer}
+                primaryDomainUrl={header.shop.primaryDomain.url}
                 publicStoreDomain={publicStoreDomain}
               />
             </Await>
