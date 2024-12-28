@@ -19,19 +19,22 @@ export function CartLineItem({layout, line}) {
   const {close} = useAside();
 
   return (
-    <li key={id} className="cart-line">
-      {image && (
-        <Image
-          alt={title}
-          aspectRatio="1/1"
-          data={image}
-          height={100}
-          loading="lazy"
-          width={100}
-        />
-      )}
+    <li key={id} className="flex items-center gap-4 py-4 px-4">
+      <div className="flex-shrink-0 aspect-square w-24 h-24 border border-gray-200 rounded-sm overflow-hidden">
+        {image && (
+          <Image
+            alt={title}
+            aspectRatio="1/1"
+            data={image}
+            height={96}
+            loading="lazy"
+            width={96}
+            className="w-full h-full object-cover"
+          />
+        )}
+      </div>
 
-      <div>
+      <div className="flex-grow min-w-0">
         <Link
           prefetch="intent"
           to={lineItemUrl}
@@ -40,78 +43,69 @@ export function CartLineItem({layout, line}) {
               close();
             }
           }}
+          className="block hover:text-gray-500 transition-colors"
         >
-          <p>
-            <strong>{product.title}</strong>
-          </p>
+          <h3 className="text-lg font-medium truncate">{product.title}</h3>
         </Link>
-        <ProductPrice price={line?.cost?.totalAmount} />
-        <ul>
+        
+        <div className="mt-1 text-sm text-gray-500">
           {selectedOptions.map((option) => (
-            <li key={option.name}>
-              <small>
-                {option.name}: {option.value}
-              </small>
-            </li>
+            <div key={option.name}>
+              {option.name}: {option.value}
+            </div>
           ))}
-        </ul>
-        <CartLineQuantity line={line} />
+        </div>
+        
+        <div className="mt-2 flex items-center gap-4">
+          <CartLineQuantityAdjust line={line} />
+          <div className="ml-auto font-medium">
+            <ProductPrice price={line?.cost?.totalAmount} />
+          </div>
+        </div>
+      </div>
+
+      <div className="flex-shrink-0">
+        <CartLineRemoveButton lineIds={[id]} />
       </div>
     </li>
   );
 }
 
-/**
- * Provides the controls to update the quantity of a line item in the cart.
- * These controls are disabled when the line item is new, and the server
- * hasn't yet responded that it was successfully added to the cart.
- * @param {{line: CartLine}}
- */
-function CartLineQuantity({line}) {
+function CartLineQuantityAdjust({line}) {
   if (!line || typeof line?.quantity === 'undefined') return null;
   const {id: lineId, quantity, isOptimistic} = line;
   const prevQuantity = Number(Math.max(0, quantity - 1).toFixed(0));
   const nextQuantity = Number((quantity + 1).toFixed(0));
 
   return (
-    <div className="cart-line-quantity">
-      <small>Quantity: {quantity} &nbsp;&nbsp;</small>
+    <div className="flex items-center border border-gray-200 rounded-sm">
       <CartLineUpdateButton lines={[{id: lineId, quantity: prevQuantity}]}>
         <button
           aria-label="Decrease quantity"
           disabled={quantity <= 1 || !!isOptimistic}
-          name="decrease-quantity"
-          value={prevQuantity}
+          className="w-8 h-8 flex items-center justify-center text-gray-600 hover:text-gray-900 disabled:opacity-50"
         >
-          <span>&#8722; </span>
+          &#8722;
         </button>
       </CartLineUpdateButton>
-      &nbsp;
+
+      <div className="px-2 text-center min-w-[40px]">
+        {quantity}
+      </div>
+
       <CartLineUpdateButton lines={[{id: lineId, quantity: nextQuantity}]}>
         <button
           aria-label="Increase quantity"
-          name="increase-quantity"
-          value={nextQuantity}
           disabled={!!isOptimistic}
+          className="w-8 h-8 flex items-center justify-center text-gray-600 hover:text-gray-900 disabled:opacity-50"
         >
-          <span>&#43;</span>
+          &#43;
         </button>
       </CartLineUpdateButton>
-      &nbsp;
-      <CartLineRemoveButton lineIds={[lineId]} disabled={!!isOptimistic} />
     </div>
   );
 }
 
-/**
- * A button that removes a line item from the cart. It is disabled
- * when the line item is new, and the server hasn't yet responded
- * that it was successfully added to the cart.
- * @param {{
- *   lineIds: string[];
- *   disabled: boolean;
- * }}
- */
 function CartLineRemoveButton({lineIds, disabled}) {
   return (
     <CartForm
@@ -119,19 +113,20 @@ function CartLineRemoveButton({lineIds, disabled}) {
       action={CartForm.ACTIONS.LinesRemove}
       inputs={{lineIds}}
     >
-      <button disabled={disabled} type="submit">
-        Remove
+      <button
+        className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-500"
+        disabled={disabled}
+        type="submit"
+      >
+        <span className="sr-only">Remove</span>
+        <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+          <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+        </svg>
       </button>
     </CartForm>
   );
 }
 
-/**
- * @param {{
- *   children: React.ReactNode;
- *   lines: CartLineUpdateInput[];
- * }}
- */
 function CartLineUpdateButton({children, lines}) {
   return (
     <CartForm
@@ -145,8 +140,7 @@ function CartLineUpdateButton({children, lines}) {
 }
 
 /** @typedef {OptimisticCartLine<CartApiQueryFragment>} CartLine */
-
 /** @typedef {import('@shopify/hydrogen/storefront-api-types').CartLineUpdateInput} CartLineUpdateInput */
 /** @typedef {import('~/components/CartMain').CartLayout} CartLayout */
-/** @typedef {import('@shopify/hydrogen').OptimisticCartLine} OptimisticCartLine */
-/** @typedef {import('storefrontapi.generated').CartApiQueryFragment} CartApiQueryFragment */
+/** @typedef {import('@shopify/hydrogen/storefront-api-types').CartApiQueryFragment} CartApiQueryFragment */
+/** @typedef {import('@shopify/hydrogen').OptimisticCartLine<CartApiQueryFragment>} OptimisticCartLine */
