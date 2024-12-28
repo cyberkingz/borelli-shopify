@@ -81,14 +81,7 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
           >
             <UserIcon className="h-6 w-6" />
           </NavLink> */}
-          <button 
-            className="text-gray-700 hover:text-gray-900"
-            onClick={() => {
-              // Add search functionality
-            }}
-          >
-            <MagnifyingGlassIcon className="h-6 w-6" />
-          </button>
+         
           <CartToggle cart={cart} />
         </div>
       </div>
