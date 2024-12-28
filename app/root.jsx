@@ -121,6 +121,7 @@ function loadDeferredData({context}) {
       cache: storefront.CacheLong(),
       variables: {
         footerMenuHandle: 'footer', // Adjust to your footer menu handle
+        footerShopHandle: 'shop'
       },
     })
     .catch((error) => {
