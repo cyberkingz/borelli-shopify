@@ -53,8 +53,8 @@ export default function Collections() {
   return (
     <div className="collections">
       <div className="bg-gray-100 py-8 mb-8">
-        <div className="container mx-auto px-4">
-          <h1 className="text-4xl font-bold text-center mb-4">Collections</h1>
+        <div className="container mx-auto px-4 flex flex-col justify-center items-center">
+          <h1 className="text-4xl font-bold text-center">Collections</h1>
           <p className="text-center text-gray-600 max-w-2xl mx-auto">
             Browse our curated collections of premium clothing
           </p>
