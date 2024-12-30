@@ -1,8 +1,18 @@
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import {Image} from '@shopify/hydrogen';
 
-export function ProductGallery({images = [], title}) {
+export function ProductGallery({images = [], title, selectedVariant}) {
   const [selectedImage, setSelectedImage] = useState(0);
+
+  // Update selected image when variant changes
+  useEffect(() => {
+    if (selectedVariant?.image) {
+      const variantImageIndex = images.findIndex(img => img.url === selectedVariant.image.url);
+      if (variantImageIndex >= 0) {
+        setSelectedImage(variantImageIndex);
+      }
+    }
+  }, [selectedVariant, images]);
 
   if (!images || images.length === 0) {
     return null;
@@ -29,7 +39,7 @@ export function ProductGallery({images = [], title}) {
       {/* Thumbnail Navigation */}
       <div className="relative mt-4">
         <div className="overflow-x-auto scrollbar-hide scroll-smooth">
-          <div className="flex gap-2 pb-2">
+          <div className="flex gap-2 pb-2 pt-2">
             {images.map((image, index) => (
               <button
                 key={image.id}
@@ -38,8 +48,8 @@ export function ProductGallery({images = [], title}) {
                   relative flex-shrink-0 aspect-[3/4] w-20 overflow-hidden rounded-sm bg-gray-100
                   transition-all duration-300 ease-in-out
                   ${selectedImage === index 
-                    ? 'ring-2 ring-black shadow-lg scale-105' 
-                    : 'hover:ring-1 hover:ring-black/50 hover:scale-[1.02]'
+                    ? 'ring-1 ring-black shadow-lg' 
+                    : 'hover:ring-1 hover:ring-black/20 '
                   }
                 `}
               >

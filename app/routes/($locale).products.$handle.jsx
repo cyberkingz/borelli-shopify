@@ -143,6 +143,7 @@ export default function Product() {
           <ProductGallery 
             images={product.images.nodes} 
             title={product.title} 
+            selectedVariant={selectedVariant}
           />
         </div>
 
