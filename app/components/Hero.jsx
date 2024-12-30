@@ -33,7 +33,7 @@ export function Hero() {
                 {/* Button Section */}
                 <div className="w-full flex [&>*]:mx-auto sm:[&>*]:ml-0">
                   <Link
-                    to="/collections"
+                    to="/collections/best-selling"
                     className="border border-white text-white px-8 py-3 uppercase transition-colors"
                   >
                     Shop Now
