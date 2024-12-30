@@ -18,6 +18,7 @@ import policies from './styles/policies.css?url';
 import {PageLayout} from '~/components/PageLayout';
 import {AnnouncementBar} from '~/components/AnnouncementBar';
 import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
+import { FacebookWebPixel } from './components/FacebookWebPixel';
 
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
@@ -158,6 +159,12 @@ export function Layout({children}) {
         <Links />
       </head>
       <body>
+        {/* NoScript fallback for users with JavaScript disabled */}
+          <noscript>
+            <img height="1" width="1" style={{display: 'none'}}
+            src="https://www.facebook.com/tr?id=9441636952533644&ev=PageView&noscript=1"
+        />
+        </noscript>
         <div className="overflow-x-hidden">
           <AnnouncementBar />
           {data ? (
@@ -167,6 +174,7 @@ export function Layout({children}) {
               consent={data.consent}
             >
               <PageLayout {...data}>{children}</PageLayout>
+              <FacebookWebPixel />
             </Analytics.Provider>
           ) : (
             children
