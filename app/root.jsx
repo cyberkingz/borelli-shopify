@@ -17,6 +17,7 @@ import tailwindCss from './styles/tailwind.css?url';
 import policies from './styles/policies.css?url';
 import {PageLayout} from '~/components/PageLayout';
 import {AnnouncementBar} from '~/components/AnnouncementBar';
+import {FacebookPixel} from '~/components/FacebookPixel';
 import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
 
 /**
@@ -151,15 +152,13 @@ export function Layout({children}) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
-
-        
-
         <Meta />
         <Links />
       </head>
       <body>
         <div className="overflow-x-hidden">
           <AnnouncementBar />
+          <FacebookPixel />
           {data ? (
             <Analytics.Provider
               cart={data.cart}
@@ -172,8 +171,8 @@ export function Layout({children}) {
             children
           )}
         </div>
-        <ScrollRestoration nonce={nonce} />
-        <Scripts nonce={nonce} />
+        <ScrollRestoration />
+        <Scripts />
       </body>
     </html>
   );
