@@ -38,20 +38,43 @@ export function ProductGallery({images = [], title, selectedVariant}) {
 
       {/* Thumbnail Navigation */}
       <div className="relative mt-4">
-        <div className="overflow-x-auto scrollbar-hide scroll-smooth">
-          <div className="flex gap-2 pb-2 pt-2">
+        {/* Previous button */}
+        <button
+          onClick={() => {
+            const container = document.querySelector('[data-thumbnail-container]');
+            if (container) {
+              container.scrollBy({ left: -80, behavior: 'smooth' });
+            }
+          }}
+          className="absolute left-0 top-1/2 z-10 -translate-y-1/2 bg-white/80 p-1 opacity-75 hover:opacity-100 disabled:opacity-0"
+          aria-label="Previous thumbnails"
+        >
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 18l-6-6 6-6"/>
+          </svg>
+        </button>
+
+        <div className="overflow-x-auto scrollbar-hide scroll-smooth px-6" data-thumbnail-container>
+          <div className="flex gap-2 pb-2 pt-2" style={{ width: 'max-content' }}>
             {images.map((image, index) => (
               <button
                 key={image.id}
-                onClick={() => setSelectedImage(index)}
+                onClick={() => {
+                  setSelectedImage(index);
+                  // Scroll thumbnail into view when selected
+                  const thumbnail = document.querySelector(`[data-thumbnail-index="${index}"]`);
+                  thumbnail?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                }}
+                data-thumbnail-index={index}
                 className={`
                   relative flex-shrink-0 aspect-[3/4] w-20 overflow-hidden rounded-sm bg-gray-100
                   transition-all duration-300 ease-in-out
                   ${selectedImage === index 
                     ? 'ring-1 ring-black shadow-lg' 
-                    : 'hover:ring-1 hover:ring-black/20 '
+                    : 'hover:ring-1 hover:ring-black/20'
                   }
                 `}
+                style={{ maxWidth: 'calc(25% - 6px)' }}
               >
                 <img
                   src={image.url}
@@ -69,6 +92,22 @@ export function ProductGallery({images = [], title, selectedVariant}) {
             ))}
           </div>
         </div>
+
+        {/* Next button */}
+        <button
+          onClick={() => {
+            const container = document.querySelector('[data-thumbnail-container]');
+            if (container) {
+              container.scrollBy({ left: 80, behavior: 'smooth' });
+            }
+          }}
+          className="absolute right-0 top-1/2 z-10 -translate-y-1/2 bg-white/80 p-1 opacity-75 hover:opacity-100 disabled:opacity-0"
+          aria-label="Next thumbnails"
+        >
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 18l6-6-6-6"/>
+          </svg>
+        </button>
       </div>
 
       <style>{`
