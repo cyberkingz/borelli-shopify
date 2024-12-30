@@ -1,10 +1,15 @@
 import {CartForm, Money} from '@shopify/hydrogen';
 import {useRef} from 'react';
+import {useMatches} from '@remix-run/react';
+import {buildShopUrl} from '~/lib/utils';
 
 /**
  * @param {CartSummaryProps}
  */
 export function CartSummary({cart, layout}) {
+  const matches = useMatches();
+  const locale = matches[0]?.params?.locale || 'en';
+  
   const className =
     layout === 'page' ? 'cart-summary-page' : 'cart-summary-aside';
 
@@ -20,21 +25,34 @@ export function CartSummary({cart, layout}) {
           )}
         </dd>
       </dl>
-      <CartCheckoutActions checkoutUrl={cart.checkoutUrl} />
+      <CartCheckoutActions 
+        checkoutUrl={cart.checkoutUrl} 
+        orderId={cart.id}
+        locale={locale}
+      />
     </div>
   );
 }
 
 /**
- * @param {{checkoutUrl?: string}}
+ * @param {{
+ *   checkoutUrl?: string;
+ *   orderId?: string;
+ *   locale: string;
+ * }}
  */
-function CartCheckoutActions({checkoutUrl}) {
+function CartCheckoutActions({checkoutUrl, orderId, locale}) {
   if (!checkoutUrl) return null;
+
+  // Add return_to parameter to the checkout URL
+  const returnUrl = buildShopUrl(`/order/${orderId}`, locale);
+  const checkoutUrlWithReturn = new URL(checkoutUrl);
+  checkoutUrlWithReturn.searchParams.set('return_to', returnUrl);
 
   return (
     <div className="pb-4">
       <a
-        href={checkoutUrl}
+        href={checkoutUrlWithReturn.toString()}
         target="_self"
         className="block bg-[#2B555A] text-white w-full rounded-none py-3 uppercase font-medium hover:opacity-90 transition-opacity text-center"
         onClick={(e) => {

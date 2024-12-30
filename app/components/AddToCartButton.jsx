@@ -1,8 +1,22 @@
 import {CartForm} from '@shopify/hydrogen';
+import {useFacebookPixel} from '~/hooks/useFacebookPixel';
+
+/**
+ * @typedef {Object} Analytics
+ * @property {Array<{
+ *   name: string;
+ *   variant?: string;
+ *   price?: string;
+ *   currency?: string;
+ *   sku?: string;
+ *   vendor?: string;
+ * }>} products
+ * @property {string} [currency]
+ */
 
 /**
  * @param {{
- *   analytics?: unknown;
+ *   analytics?: Analytics;
  *   children: React.ReactNode;
  *   disabled?: boolean;
  *   lines: Array<OptimisticCartLineInput>;
@@ -18,6 +32,33 @@ export function AddToCartButton({
   onClick,
   className = '',
 }) {
+  const {trackAddToCart} = useFacebookPixel();
+  
+  const handleClick = () => {
+    // Track the add to cart event
+    if (lines?.[0] && analytics?.products?.[0]) {
+      const line = lines[0];
+      const product = analytics.products[0];
+      
+      const productData = {
+        id: line.merchandiseId,
+        title: product.name,
+        variant: product.variant,
+        price: {
+          amount: product.price || line.attributes?.find(attr => attr.key === 'price')?.value || '0',
+          currencyCode: product.currency || line.attributes?.find(attr => attr.key === 'currency')?.value || 'EUR'
+        },
+        sku: product.sku,
+        vendor: product.vendor
+      };
+
+      trackAddToCart(productData);
+    }
+    
+    // Call the original onClick if provided
+    if (onClick) onClick();
+  };
+
   return (
     <CartForm route="/cart" inputs={{lines}} action={CartForm.ACTIONS.LinesAdd}>
       {(fetcher) => {
@@ -32,7 +73,7 @@ export function AddToCartButton({
             />
             <button
               type="submit"
-              onClick={onClick}
+              onClick={handleClick}
               disabled={disabled ?? isAdding}
               className={`
                 reset
