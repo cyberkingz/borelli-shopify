@@ -18,7 +18,6 @@ import policies from './styles/policies.css?url';
 import {PageLayout} from '~/components/PageLayout';
 import {AnnouncementBar} from '~/components/AnnouncementBar';
 import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
-import {useEffect} from 'react';
 
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
@@ -56,19 +55,6 @@ export function links() {
     {rel: 'icon', type: 'image/svg+xml', href: favicon},
   ];
 }
-
-export const headers = ({loaderHeaders}) => {
-  return {
-    'Content-Security-Policy': `
-      default-src 'self' https://cdn.shopify.com https://shopify.com;
-      script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.shopify.com https://shopify.com https://connect.facebook.net;
-      img-src 'self' data: https://cdn.shopify.com https://shopify.com https://www.facebook.com;
-      style-src 'self' 'unsafe-inline' https://cdn.shopify.com;
-      frame-src 'self' https://cdn.shopify.com https://shopify.com;
-      connect-src 'self' https://monorail-edge.shopifysvc.com;
-    `.trim().replace(/\s+/g, ' '),
-  };
-};
 
 /**
  * @param {LoaderFunctionArgs} args
@@ -152,8 +138,6 @@ function loadDeferredData({context}) {
   };
 }
 
-const FACEBOOK_PIXEL_ID = '9441636952533644';
-
 /**
  * @param {{children?: React.ReactNode}}
  */
@@ -167,31 +151,23 @@ export function Layout({children}) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
-        {/* Facebook Pixel Code */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              !function(f,b,e,v,n,t,s)
-              {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-              n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-              if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-              n.queue=[];t=b.createElement(e);t.async=!0;
-              t.src=v;s=b.getElementsByTagName(e)[0];
-              s.parentNode.insertBefore(t,s)}(window, document,'script',
-              'https://connect.facebook.net/en_US/fbevents.js');
-              fbq('init', '${FACEBOOK_PIXEL_ID}');
-              fbq('track', 'PageView');
-            `
-          }}
-        />
-        <noscript>
-          <img 
-            height="1" 
-            width="1" 
-            style={{display: 'none'}}
-            src={`https://www.facebook.com/tr?id=${FACEBOOK_PIXEL_ID}&ev=PageView&noscript=1`}
-          />
-        </noscript>
+        <script dangerouslySetInnerHTML={{
+          __html: `!function(f,b,e,v,n,t,s)
+          {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+          n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+          if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+          n.queue=[];t=b.createElement(e);t.async=!0;
+          t.src=v;s=b.getElementsByTagName(e)[0];
+          s.parentNode.insertBefore(t,s)}(window, document,'script',
+          'https://connect.facebook.net/en_US/fbevents.js');
+          fbq('init', '9441636952533644');
+          fbq('track', 'PageView');`
+        }} />
+        <noscript dangerouslySetInnerHTML={{
+          __html: `<img height="1" width="1" style="display:none"
+          src="https://www.facebook.com/tr?id=9441636952533644&ev=PageView&noscript=1"
+          />`
+        }} />
         <Meta />
         <Links />
       </head>
@@ -218,26 +194,6 @@ export function Layout({children}) {
 }
 
 export default function App() {
-  useEffect(() => {
-    // Initialize Facebook Pixel
-    !function(f,b,e,v,n,t,s)
-    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-    n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t,s)}(window, document,'script',
-    'https://connect.facebook.net/en_US/fbevents.js');
-    
-    fbq('init', FACEBOOK_PIXEL_ID);
-    fbq('track', 'PageView');
-
-    // Track page views on route changes
-    return () => {
-      fbq('track', 'PageView');
-    };
-  }, []);
-
   return <Outlet />;
 }
 

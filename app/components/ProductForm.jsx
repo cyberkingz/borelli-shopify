@@ -107,35 +107,10 @@ export function ProductForm({productOptions, selectedVariant, title, vendor}) {
                   {
                     merchandiseId: selectedVariant.id,
                     quantity: 1,
-                    attributes: [
-                      {
-                        key: 'title',
-                        value: title
-                      },
-                      {
-                        key: 'price',
-                        value: selectedVariant.price.amount
-                      },
-                      {
-                        key: 'currency',
-                        value: selectedVariant.price.currencyCode
-                      }
-                    ]
                   },
                 ]
               : []
           }
-          analytics={{
-            products: [{
-              name: title,
-              variant: selectedVariant?.title,
-              price: selectedVariant?.price.amount,
-              currency: selectedVariant?.price.currencyCode,
-              sku: selectedVariant?.sku || '',
-              vendor: vendor
-            }],
-            currency: selectedVariant?.price.currencyCode
-          }}
           className="!bg-black hover:!bg-gray-900 !w-full"
         >
           {selectedVariant?.availableForSale ? 'Add to Cart' : 'Sold Out'}
