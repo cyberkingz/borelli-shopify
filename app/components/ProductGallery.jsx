@@ -46,11 +46,11 @@ export function ProductGallery({images = [], title, selectedVariant}) {
               container.scrollBy({ left: -80, behavior: 'smooth' });
             }
           }}
-          className="absolute left-0 top-1/2 z-10 -translate-y-1/2 bg-white/80 p-1 opacity-75 hover:opacity-100 disabled:opacity-0"
+          className="absolute -left-2 top-1/2 z-10 -translate-y-1/2 rounded-full border border-black/10 bg-white p-1.5 shadow-sm transition-all hover:border-black/30 hover:shadow-md disabled:opacity-0"
           aria-label="Previous thumbnails"
         >
-          <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
-            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 18l-6-6 6-6"/>
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" className="text-black/60">
+            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 18l-6-6 6-6"/>
           </svg>
         </button>
 
@@ -101,11 +101,11 @@ export function ProductGallery({images = [], title, selectedVariant}) {
               container.scrollBy({ left: 80, behavior: 'smooth' });
             }
           }}
-          className="absolute right-0 top-1/2 z-10 -translate-y-1/2 bg-white/80 p-1 opacity-75 hover:opacity-100 disabled:opacity-0"
+          className="absolute -right-2 top-1/2 z-10 -translate-y-1/2 rounded-full border border-black/10 bg-white p-1.5 shadow-sm transition-all hover:border-black/30 hover:shadow-md disabled:opacity-0"
           aria-label="Next thumbnails"
         >
-          <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
-            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 18l6-6-6-6"/>
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" className="text-black/60">
+            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 18l6-6-6-6"/>
           </svg>
         </button>
       </div>
