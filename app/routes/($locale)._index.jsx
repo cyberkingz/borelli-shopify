@@ -11,7 +11,7 @@ import {VideoSlider} from '~/components/VideoSlider';
  * @type {MetaFunction}
  */
 export const meta = () => {
-  return [{title: 'Hydrogen | Home'}];
+  return [{title: 'Barker London | Home'}];
 };
 
 /**
