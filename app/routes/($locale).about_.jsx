@@ -12,10 +12,10 @@ import {CTASection} from '~/components/about/CTASection';
  */
 export const meta = () => {
   return [
-    {title: 'About Us | Borelli'},
+    {title: 'About Us | Barker London'},
     {
       description:
-        'Discover the story behind Borelli - crafting the perfect fit for men since 2018. Learn about our commitment to quality, innovation, and style.',
+        'Discover the story behind Barker London - crafting the perfect fit for men since 2018. Learn about our commitment to quality, innovation, and style.',
     },
   ];
 };

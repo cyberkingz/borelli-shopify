@@ -23,8 +23,8 @@ import { ProductPageProductSlider } from '~/components/ProductPageProductSlider'
  */
 export const meta = ({data}) => {
   return [
-    {title: data?.product?.title ? `Borelli | ${data.product.title}` : 'Borelli'},
-    {description: data?.product?.description ?? 'Borelli product page'}
+    {title: data?.product?.title ? `Barker London | ${data.product.title}` : 'Barker London'},
+    {description: data?.product?.description ?? 'Barker London product page'}
   ];
 };
 
