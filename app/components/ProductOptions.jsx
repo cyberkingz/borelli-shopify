@@ -37,7 +37,7 @@ export function ProductOptions({option, productTitle, product}) {
 
   if (option.optionValues.length === 1) return null;
 
-  const isSize = option.name.toLowerCase() === 'size';
+  const isSize = option.name.toLowerCase() === 'size' || option.name.toLowerCase() === 'shoe size';
   const showDropdown = isSize && option.optionValues.length > 4;
 
   const handleOptionChange = (optionName, optionValue) => {
@@ -67,19 +67,21 @@ export function ProductOptions({option, productTitle, product}) {
                 {searchParams.get(option.name) || ''}
               </span>
             </div>
-            <div className="flex items-center gap-2 text-sm">
-              <img 
-                src={sizeFinderIcon} 
-                alt="Size Guide" 
-                className="w-4 h-4"
-              />
-              <button 
-                className="underline"
-                onClick={() => setIsSizeFinderOpen(true)}
-              >
-                Size Finder
-              </button>
-            </div>
+            {option.name.toLowerCase() === 'size' && (
+              <div className="flex items-center gap-2 text-sm">
+                <img 
+                  src={sizeFinderIcon} 
+                  alt="Size Guide" 
+                  className="w-4 h-4"
+                />
+                <button 
+                  className="underline"
+                  onClick={() => setIsSizeFinderOpen(true)}
+                >
+                  Size Finder
+                </button>
+              </div>
+            )}
           </div>
         ) : (
           <div className="flex items-center">
