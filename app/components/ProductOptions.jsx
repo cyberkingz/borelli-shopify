@@ -42,7 +42,19 @@ export function ProductOptions({option, productTitle, product}) {
 
   const handleOptionChange = (optionName, optionValue) => {
     const newSearchParams = new URLSearchParams(searchParams);
-    newSearchParams.set(optionName, optionValue);
+    
+    // If it's a color option, we want to update it regardless of size
+    if (optionName.toLowerCase() === 'color') {
+      newSearchParams.set(optionName, optionValue);
+    } else {
+      // For non-color options (like size), ensure we have a color selected
+      const currentColor = searchParams.get('Color');
+      if (currentColor) {
+        newSearchParams.set('Color', currentColor);
+      }
+      newSearchParams.set(optionName, optionValue);
+    }
+    
     navigate(`?${newSearchParams.toString()}`, {
       replace: true,
       preventScrollReset: true,

@@ -17,6 +17,7 @@ import {RecommendedProducts} from '~/components/RecommendedProducts';
 import {InsuranceFeatures} from '~/components/InsuranceFeatures';
 import {ImageSlider} from '~/components/ImageSlider';
 import { ProductPageProductSlider } from '~/components/ProductPageProductSlider';
+import { useSearchParams } from '@remix-run/react';
 
 /**
  * @type {MetaFunction<typeof loader>}
@@ -35,12 +36,22 @@ export async function loader({params, context, request}) {
   const {handle} = params;
   const {storefront} = context;
 
+  // Get selected options from the URL
+  const selectedOptions = getSelectedProductOptions(request) || [];
+  
+  // If we have a color but no size, we still want to show that color's images
+  const url = new URL(request.url);
+  const colorParam = url.searchParams.get('Color');
+  if (colorParam && !url.searchParams.get('Size') && !url.searchParams.get('Shoe Size')) {
+    selectedOptions.push({ name: 'Color', value: colorParam });
+  }
+
   const {product} = await storefront.query(PRODUCT_QUERY, {
     variables: {
       handle,
       country: context.storefront.i18n.country,
       language: context.storefront.i18n.language,
-      selectedOptions: getSelectedProductOptions(request) || [],
+      selectedOptions,
     },
   });
 
@@ -125,10 +136,29 @@ function loadDeferredData({context, params}) {
 
 export default function Product() {
   const {product, newArrivals, poloProducts} = useLoaderData();
+  
+  // Get the current URL parameters
+  const [searchParams] = useSearchParams();
+  const colorOption = searchParams.get('Color');
+  
+  // Find the variant that matches the selected color
+  let initialVariant = product.selectedOrFirstAvailableVariant;
+  if (colorOption) {
+    const colorVariant = product.variants?.nodes?.find(variant => 
+      variant.selectedOptions.some(opt => 
+        opt.name === 'Color' && opt.value === colorOption
+      )
+    );
+    if (colorVariant) {
+      initialVariant = colorVariant;
+    }
+  }
+
   const selectedVariant = useOptimisticVariant(
-    product.selectedOrFirstAvailableVariant,
+    initialVariant,
     getAdjacentAndFirstAvailableVariants(product),
   );
+
   useSelectedOptionInUrlParam(selectedVariant.selectedOptions);
   const productOptions = getProductOptions({
     ...product,
@@ -158,8 +188,6 @@ export default function Product() {
               product={product}
             />
           </div>
-
-         
 
           {/* Recommended Products */}
           <ProductDetails description={product.description} />
@@ -244,6 +272,11 @@ const PRODUCT_FRAGMENT = `#graphql
         altText
         width
         height
+      }
+    }
+    variants(first: 50) {
+      nodes {
+        ...ProductVariant
       }
     }
     options {
