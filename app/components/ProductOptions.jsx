@@ -239,12 +239,12 @@ function ColorSwatch({name, handle, selected, available, onClick, customColor}) 
       className={`
         relative w-8 h-8 rounded-full overflow-hidden
         transition-all duration-200
+        ring-1 ring-gray-400
         ${selected ? 'ring-2 ring-offset-2 ring-black' : ''}
         ${!available ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:scale-110'}
       `}
       style={{
         backgroundColor: colorValue,
-        border: '1px solid #e5e7eb'
       }}
       disabled={!available}
     >
