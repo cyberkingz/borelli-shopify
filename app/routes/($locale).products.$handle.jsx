@@ -40,7 +40,7 @@ export async function loader({params, context, request}) {
       handle,
       country: context.storefront.i18n.country,
       language: context.storefront.i18n.language,
-      selectedOptions: getSelectedProductOptions(request),
+      selectedOptions: getSelectedProductOptions(request) || [],
     },
   });
 
@@ -155,6 +155,7 @@ export default function Product() {
               selectedVariant={selectedVariant}
               title={product.title}
               vendor={product.vendor}
+              product={product}
             />
           </div>
 
@@ -285,6 +286,16 @@ const PRODUCT_QUERY = `#graphql
   ) @inContext(country: $country, language: $language) {
     product(handle: $handle) {
       ...Product
+      metafields(
+        identifiers: [
+          {namespace: "custom", key: "fog-blue"},
+          {namespace: "custom", key: "marine-blue"}
+        ]
+      ) {
+        key
+        value
+        namespace
+      }
     }
   }
   ${PRODUCT_FRAGMENT}

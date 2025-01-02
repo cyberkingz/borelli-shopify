@@ -59,7 +59,7 @@ export function ProductForm({productOptions, selectedVariant, title, vendor}) {
       </div>
 
       {/* Product Options */}
-      <div className="grid gap-4">
+      <div className="grid gap-6">
         {productOptions.map((option) => (
           <div key={option.name}>
             <ProductOptions 
