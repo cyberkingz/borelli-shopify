@@ -423,21 +423,51 @@ button.reset:hover:not(:has(> *)) {
 
 .products-grid {
   display: grid;
-  grid-gap: 1.5rem;
-  grid-template-columns: repeat(auto-fit, minmax(var(--grid-item-width), 1fr));
+  gap: 1.5rem;
+  grid-template-columns: repeat(2, 1fr);
   margin-bottom: 2rem;
 }
 
-.product-item img {
-  height: auto;
-  width: 100%;
+@media (min-width: 768px) {
+  .products-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
-/*
-* --------------------------------------------------
-* routes/products.$handle.tsx
-* --------------------------------------------------
-*/
+@media (min-width: 1024px) {
+  .products-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.product-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.product-item img {
+  aspect-ratio: 3/4;
+  width: 100%;
+  object-fit: cover;
+}
+
+.product-item h4 {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.2;
+}
+
+@media (max-width: 767px) {
+  .product-item h4 {
+    font-size: 0.875rem;
+  }
+  
+  .product-item .price {
+    font-size: 0.875rem;
+  }
+}
+
 .product {
   display: grid;
   @media (min-width: 45em) {
