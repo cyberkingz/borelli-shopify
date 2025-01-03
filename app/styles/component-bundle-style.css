@@ -1,0 +1,52 @@
+.product-page-bundle {
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+.product-page-bundle label {
+    position: relative;
+    display: flex;
+    border: 1px solid #ddd;
+    justify-content: space-between;
+    padding: 1rem;
+    align-items: flex-start;
+}
+.product-page-bundle label .content {
+    display: flex;
+    justify-content: space-between;
+    flex: 1;
+    flex-direction: column;
+}
+.product-page-bundle label .radio {
+    flex: 0 0 50px;
+}
+.product-page-bundle label .pricing {
+    flex: 0 0 auto;
+}
+.product-page-bundle label .pricing .price {
+    text-align: right;
+}
+.product-page-bundle label .content .heading {
+    font-weight: 700;
+}
+.product-page-bundle label .content .duo-options-container {
+    margin-top: 1rem;
+}
+.product-page-bundle label .content .duo-options-container .dou-option {
+    display: flex;
+    gap: 10px;
+}
+.product-page-bundle label.active {
+    border: 1px solid #2B555A;
+    background: #F2F2F2;
+}
+.product-page-bundle label .bundle-badge {
+    right: 0;
+    position: absolute;
+    top: -12px;
+    background: #2B555A;
+    color: #fff;
+    padding: 2px 8px;
+    font-size: 14px;
+}

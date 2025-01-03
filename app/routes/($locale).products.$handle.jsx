@@ -18,6 +18,7 @@ import {InsuranceFeatures} from '~/components/InsuranceFeatures';
 import {ImageSlider} from '~/components/ImageSlider';
 import { ProductPageProductSlider } from '~/components/ProductPageProductSlider';
 import { useSearchParams } from '@remix-run/react';
+import { useEffect, useState } from 'react';
 
 /**
  * @type {MetaFunction<typeof loader>}
@@ -136,7 +137,12 @@ function loadDeferredData({context, params}) {
 
 export default function Product() {
   const {product, newArrivals, poloProducts} = useLoaderData();
-  
+  const [douSelected, setDouSelected] = useState('single');
+  const [firstSelectedVariant, setFirstSelectedVariant] = useState(null);
+  const [secondSelectedVariant, setSecondSelectedVariant] = useState(null);
+  const [firstSelectedOptions, setFirstSelectedOptions] = useState([]);
+  const [secondSelectedOptions, setSecondSelectedOptions] = useState([]);
+  const [douTotalPrice, setDouTotalPrice] = useState(0);
   // Get the current URL parameters
   const [searchParams] = useSearchParams();
   const colorOption = searchParams.get('Color');
@@ -164,7 +170,19 @@ export default function Product() {
     ...product,
     selectedOrFirstAvailableVariant: selectedVariant,
   });
+  
+  useEffect(() => {
+    
+    setFirstSelectedVariant(initialVariant);
+    setSecondSelectedVariant(initialVariant);
+    setFirstSelectedOptions(initialVariant?.selectedOptions);
+    setSecondSelectedOptions(initialVariant?.selectedOptions);
+    
+    const totalAmount = parseFloat(initialVariant?.price?.amount) + parseFloat(initialVariant?.price?.amount);
+    setDouTotalPrice({amount: totalAmount.toLocaleString(), currencyCode: initialVariant?.price?.currencyCode });
 
+  },[initialVariant])
+  
   return (
     <div className="mx-auto max-w-7xl px-4 md:px-8 lg:px-12">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 py-12">
@@ -183,9 +201,21 @@ export default function Product() {
             <ProductForm
               productOptions={productOptions}
               selectedVariant={selectedVariant}
+              firstSelectedVariant={firstSelectedVariant}
+              setFirstSelectedVariant={setFirstSelectedVariant}
+              secondSelectedVariant={secondSelectedVariant}
+              setSecondSelectedVariant={setSecondSelectedVariant}
               title={product.title}
               vendor={product.vendor}
               product={product}
+              douSelected={douSelected}
+              setDouSelected={setDouSelected}
+              firstSelectedOptions={firstSelectedOptions}
+              setFirstSelectedOptions={setFirstSelectedOptions}
+              secondSelectedOptions={secondSelectedOptions}
+              setSecondSelectedOptions={setSecondSelectedOptions}
+              douTotalPrice={douTotalPrice}
+              setDouTotalPrice={setDouTotalPrice}
             />
           </div>
 
