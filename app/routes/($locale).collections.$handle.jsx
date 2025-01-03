@@ -8,6 +8,7 @@ import {
 } from '@shopify/hydrogen';
 import {useVariantUrl} from '~/lib/variants';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
+import collectionCover from '../assets/collection/collection-cover.png';
 
 /**
  * @type {MetaFunction<typeof loader>}
@@ -79,11 +80,20 @@ export default function Collection() {
 
   return (
     <div className="collection">
-      <div className="bg-gray-100 py-8 mb-8">
-        <div className="container mx-auto px-4">
-          <h1 className="text-4xl font-bold text-center mb-4">{collection.title}</h1>
+      <div 
+        className="relative py-20 mb-8 bg-cover bg-center bg-no-repeat max-h-[200px] lg:min-h-[350px] flex items-center"
+        style={{ 
+          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${collectionCover})`,
+          backgroundPosition: 'center',
+          backgroundSize: 'cover'
+        }}
+      >
+        <div className="container mx-auto px-4 relative z-10">
+          <h1 className="text-4xl font-bold text-center mb-4 text-white">{collection.title}</h1>
           {collection.description && (
-            <p className="text-center text-gray-600 max-w-2xl mx-auto">{collection.description}</p>
+            <p className="text-center text-white text-opacity-90 max-w-2xl mx-auto">
+              {collection.description}
+            </p>
           )}
         </div>
       </div>
