@@ -11,6 +11,7 @@
     justify-content: space-between;
     padding: 1rem;
     align-items: flex-start;
+    gap: 10px;
 }
 .product-page-bundle label .content {
     display: flex;
@@ -32,6 +33,9 @@
 }
 .product-page-bundle label .content .duo-options-container {
     margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 .product-page-bundle label .content .duo-options-container .dou-option {
     display: flex;
@@ -49,4 +53,12 @@
     color: #fff;
     padding: 2px 8px;
     font-size: 14px;
+}
+@media screen and (max-width: 768px) {
+    .product-page-bundle {
+        max-width: 100%;
+    }
+    .product-page-bundle label .radio {
+        flex: 0 0 30px;
+    }    
 }
