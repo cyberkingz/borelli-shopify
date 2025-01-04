@@ -15,6 +15,8 @@ import moneyBackIcon from '../assets/back_1.svg';
 import shopifyPayIcon from '../assets/payment-icons/shopify-pay.svg';
 import cardIcon from '../assets/payment-icons/credit-card.svg';
 import {Accordion} from './Accordion';
+import { ProductDuoOptions } from './ProductDuoOptions';
+import { useEffect } from 'react';
 
 const PAYMENT_METHODS = [
   { icon: visaIcon, name: 'Visa' },
@@ -35,9 +37,44 @@ const PAYMENT_METHODS = [
  *   vendor: string;
  * }}
  */
-export function ProductForm({productOptions, selectedVariant, title, vendor}) {
+export function ProductForm({productOptions, product, selectedVariant, firstSelectedVariant, setFirstSelectedVariant, secondSelectedVariant, setSecondSelectedVariant, title, vendor, douSelected, setDouSelected, firstSelectedOptions, setFirstSelectedOptions, secondSelectedOptions, setSecondSelectedOptions, douTotalPrice, setDouTotalPrice}) {
   const navigate = useNavigate();
   const {open} = useAside();
+  const onChangeHandler = (event) => {
+    if(event.target.dataset.optionIndex === '1') {
+    
+      const NewValues = firstSelectedOptions.map(item => {
+        if (item.name === event.target.dataset.optionName) {
+          return { ...item, value: event.target.options[event.target.selectedIndex].value };
+        }
+        return item;
+      });   
+      setFirstSelectedOptions(NewValues);
+      product.variants.nodes.map(node => {
+        if(JSON.stringify(node?.selectedOptions) === JSON.stringify(NewValues)) {
+          setFirstSelectedVariant(node);
+          const totalAmount = parseFloat(node?.price?.amount) + parseFloat(node?.price?.amount);
+          setDouTotalPrice({amount: totalAmount.toLocaleString(), currencyCode: node?.price?.currencyCode });
+        }
+      })   
+    }
+    if(event.target.dataset.optionIndex === '2') {
+      const NewValues = secondSelectedOptions.map(item => {
+        if (item.name === event.target.dataset.optionName) {
+          return { ...item, value: event.target.options[event.target.selectedIndex].value };
+        }
+        return item;
+      });      
+      setSecondSelectedOptions(NewValues);
+      product.variants.nodes.map(node => {
+        if(JSON.stringify(node?.selectedOptions) === JSON.stringify(NewValues)) {
+          setSecondSelectedVariant(node);
+          const totalAmount = parseFloat(node?.price?.amount) + parseFloat(node?.price?.amount);
+          setDouTotalPrice({amount: totalAmount.toLocaleString(), currencyCode: node?.price?.currencyCode });
+        }
+      })   
+    }
+  }
 
   return (
     <div className="flex flex-col gap-6">
@@ -70,7 +107,92 @@ export function ProductForm({productOptions, selectedVariant, title, vendor}) {
           </div>
         ))}
       </div>
-
+      {/* Bundle Functionality */}
+      <div className="product-page-bundle">
+        <label className={douSelected === 'single' ? `single active` : `single`} htmlFor="single-bundle">
+            <div className="radio">
+            <input type="radio" name="bundle-option" value="single" id="single-bundle" checked={douSelected === 'single'} onChange={() => setDouSelected('single')} />
+            </div>
+            <div className="content">
+              <span className="heading">SINGLE</span>
+              <span className="sub-heading">Standard Price</span>
+            </div>
+            <div className="pricing">
+              <div className="price">
+                <Money 
+                  data={selectedVariant?.price}
+                  className="text-3xl font-semibold"
+                />
+              </div>
+              <div className="compare-at-price">
+                {selectedVariant?.compareAtPrice && (
+                  <Money
+                    data={selectedVariant.compareAtPrice}
+                    className="text-gray-500 line-through"
+                  />
+                )}
+              </div>
+            </div>
+        </label>
+        <label className={douSelected === 'double' ? `dou active` : `dou`} htmlFor="duo-bundle">
+            <div className="bundle-badge">BEST VALUE</div>
+            <div className="radio">
+            <input type="radio" name="bundle-option" value="duo" id="duo-bundle" checked={douSelected === 'double'} onChange={() => setDouSelected('double')} />
+            </div>
+            <div className="content">
+              <span className="heading">DUO</span>
+              <span className="sub-heading">Save an extra 10% per item</span>
+              {douSelected === 'double' && (
+                  <div className="duo-options-container">
+                  {/* First variant selection */}
+                  <div className="dou-option">
+                    {productOptions.map((option,index) => {
+                      return(
+                        <ProductDuoOptions 
+                          key={`option-${index}`} 
+                          option={option} 
+                          optionIndex={1} 
+                          onChangeHandler={onChangeHandler} 
+                          />
+                      )
+                    })}
+                  </div>
+                  {/* Second variant selection */}
+                  <div className="dou-option">
+                    {productOptions.map((option,index) => {
+                      return(
+                        <ProductDuoOptions 
+                          key={`option-${index}`} 
+                          option={option} 
+                          optionIndex={2} 
+                          onChangeHandler={onChangeHandler}
+                          />
+                      )
+                    })}
+                  </div>
+                  </div>
+              )}
+            </div>
+            <div className="pricing">
+              <div className="price">
+                {douTotalPrice && (
+                    <Money 
+                    data={douTotalPrice}
+                    className="text-3xl font-semibold"
+                    />
+                )}               
+              </div>
+              <div className="compare-at-price">
+                {selectedVariant?.compareAtPrice && (
+                  <Money
+                    data={selectedVariant.compareAtPrice}
+                    className="text-gray-500 line-through"
+                  />
+                )}
+              </div>
+            </div>
+        </label>
+      </div>
       {/* Money Back Guarantee */}
       <div className="flex items-center gap-2 text-sm">
         <img 
@@ -102,14 +224,25 @@ export function ProductForm({productOptions, selectedVariant, title, vendor}) {
           disabled={!selectedVariant || !selectedVariant.availableForSale}
           onClick={() => open('cart')}
           lines={
-            selectedVariant
+            douSelected === 'single' && selectedVariant
               ? [
                   {
                     merchandiseId: selectedVariant.id,
                     quantity: 1,
                   },
                 ]
-              : []
+            : douSelected === 'double' && firstSelectedVariant && secondSelectedVariant
+              ? [
+                {
+                  merchandiseId: firstSelectedVariant?.id,
+                  quantity: 1,
+                },
+                {
+                  merchandiseId: secondSelectedVariant?.id,
+                  quantity: 1,
+                },
+                ]
+            : []
           }
           className="!bg-black hover:!bg-gray-900 !w-full"
         >

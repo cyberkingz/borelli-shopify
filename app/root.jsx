@@ -19,6 +19,7 @@ import {PageLayout} from '~/components/PageLayout';
 import {AnnouncementBar} from '~/components/AnnouncementBar';
 import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
 import { FacebookWebPixel } from './components/FacebookWebPixel';
+import BundleStylist from './styles/component-bundle-style.css?url'
 
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
@@ -45,6 +46,7 @@ export function links() {
     {rel: 'stylesheet', href: resetStyles},
     {rel: 'stylesheet', href: appStyles},
     {rel: 'stylesheet', href: policies},
+    {rel: 'stylesheet', href: BundleStylist},
     {
       rel: 'preconnect',
       href: 'https://cdn.shopify.com',
@@ -174,7 +176,7 @@ export function Layout({children}) {
               consent={data.consent}
             >
               <PageLayout {...data}>{children}</PageLayout>
-              <FacebookWebPixel />
+              {/* <FacebookWebPixel /> */}
             </Analytics.Provider>
           ) : (
             children
