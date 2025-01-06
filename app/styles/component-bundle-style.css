@@ -1,5 +1,4 @@
 .product-page-bundle {
-    max-width: 400px;
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
@@ -20,10 +19,11 @@
     flex-direction: column;
 }
 .product-page-bundle label .radio {
-    flex: 0 0 50px;
+    flex: 0 0 20px;
 }
 .product-page-bundle label .pricing {
-    flex: 0 0 8rem;
+    position: absolute;
+    right: 14px;
     display: flex;
     gap: 10px;
     align-items: flex-start;
@@ -68,6 +68,12 @@
         max-width: 100%;
     }
     .product-page-bundle label .radio {
-        flex: 0 0 30px;
+        flex: 0 0 15px;
     }    
+}
+
+@media screen and (max-width: 421px) {
+    .product-page-bundle label .content .duo-options-container .dou-option select {
+        font-size: 3.1vw;
+    }
 }

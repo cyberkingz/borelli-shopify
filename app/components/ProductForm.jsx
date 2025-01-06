@@ -37,7 +37,30 @@ const PAYMENT_METHODS = [
  *   vendor: string;
  * }}
  */
-export function ProductForm({productOptions, product, selectedVariant, firstSelectedVariant, setFirstSelectedVariant, secondSelectedVariant, setSecondSelectedVariant, title, vendor, douSelected, setDouSelected, firstSelectedOptions, setFirstSelectedOptions, secondSelectedOptions, setSecondSelectedOptions, douTotalPrice, setDouTotalPrice, percentageSaved, setPercentageSaved, douTotalComparePrice, setDouTotalComparePrice}) {
+export function ProductForm({
+  productOptions, 
+  product, 
+  selectedVariant, 
+  firstSelectedVariant, 
+  setFirstSelectedVariant, 
+  secondSelectedVariant, 
+  setSecondSelectedVariant, 
+  title, 
+  vendor, 
+  douSelected, 
+  setDouSelected, 
+  firstSelectedOptions, 
+  setFirstSelectedOptions, 
+  secondSelectedOptions, 
+  setSecondSelectedOptions, 
+  douTotalPrice, 
+  setDouTotalPrice, 
+  percentageSaved, 
+  setPercentageSaved, 
+  douTotalComparePrice, 
+  setDouTotalComparePrice,
+  addedToCart,
+  setAddedToCart}) {
   const navigate = useNavigate();
   const {open} = useAside();
   const onChangeHandler = (event) => {
@@ -50,8 +73,10 @@ export function ProductForm({productOptions, product, selectedVariant, firstSele
         return item;
       });   
       setFirstSelectedOptions(NewValues);
+      const normalizedNewValues = JSON.stringify(NewValues).replace(/\s+/g, '').toLowerCase();
       product.variants.nodes.map(node => {
-        if(JSON.stringify(node?.selectedOptions) === JSON.stringify(NewValues)) {
+        const normalizedSelectedOptions = JSON.stringify(node?.selectedOptions).replace(/\s+/g, '').toLowerCase();
+        if(normalizedSelectedOptions === normalizedNewValues) {
           setFirstSelectedVariant(node);
           const discountAmount = parseFloat(node?.compareAtPrice?.amount) - parseFloat(node?.price?.amount);
           const discountPercentage = (discountAmount / 100) * 100;
@@ -71,8 +96,10 @@ export function ProductForm({productOptions, product, selectedVariant, firstSele
         return item;
       });      
       setSecondSelectedOptions(NewValues);
+      const normalizedNewValues = JSON.stringify(NewValues).replace(/\s+/g, '').toLowerCase();
       product.variants.nodes.map(node => {
-        if(JSON.stringify(node?.selectedOptions) === JSON.stringify(NewValues)) {
+        const normalizedSelectedOptions = JSON.stringify(node?.selectedOptions).replace(/\s+/g, '').toLowerCase();
+        if(normalizedSelectedOptions === normalizedNewValues) {
           setSecondSelectedVariant(node);
           const discountAmount = parseFloat(node?.compareAtPrice?.amount) - parseFloat(node?.price?.amount);
           const discountPercentage = (discountAmount / 100) * 100;
@@ -85,7 +112,14 @@ export function ProductForm({productOptions, product, selectedVariant, firstSele
       })   
     }
   }
- 
+
+  useEffect(() => {
+    if(addedToCart === 'loading') {
+      setDouSelected('single');
+    }
+
+  },[addedToCart])
+
   return (
     <div className="flex flex-col gap-6">
       {/* Product Title */}
@@ -159,7 +193,7 @@ export function ProductForm({productOptions, product, selectedVariant, firstSele
               {percentageSaved > 0 && (
                 <span className="sub-heading">{`Save an extra ${percentageSaved}% per item`}</span>
               )}            
-              {douSelected === 'double' && (
+              {douSelected === 'double' && firstSelectedOptions && secondSelectedOptions && (
                   <div className="duo-options-container">
                   {/* First variant selection */}
                   <div className="dou-option">
@@ -261,9 +295,12 @@ export function ProductForm({productOptions, product, selectedVariant, firstSele
                 ]
             : []
           }
+          addedToCart={addedToCart}
+          setAddedToCart={setAddedToCart}
           className="!bg-black hover:!bg-gray-900 !w-full"
         >
-          {selectedVariant?.availableForSale ? 'Add to Cart' : 'Sold Out'}
+          {douSelected === 'single' && selectedVariant?.availableForSale ? 'Add to Cart' : douSelected === 'single' && 'Sold Out'}
+          {douSelected === 'double' && firstSelectedVariant?.availableForSale && secondSelectedVariant?.availableForSale ? 'Add to Cart' : douSelected === 'double' && 'Sold Out'}
         </AddToCartButton>
       </div>
 

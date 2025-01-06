@@ -145,10 +145,10 @@ export default function Product() {
   const [percentageSaved, setPercentageSaved] = useState(0);
   const [douTotalPrice, setDouTotalPrice] = useState(0);
   const [douTotalComparePrice, setDouTotalComparePrice] = useState(0);
+  const [addedToCart, setAddedToCart] = useState('idle');
   // Get the current URL parameters
   const [searchParams] = useSearchParams();
   const colorOption = searchParams.get('Color');
-  
   // Find the variant that matches the selected color
   let initialVariant = product.selectedOrFirstAvailableVariant;
   if (colorOption) {
@@ -174,7 +174,6 @@ export default function Product() {
   });
   
   useEffect(() => {
-    
     setFirstSelectedVariant(initialVariant);
     setSecondSelectedVariant(initialVariant);
     setFirstSelectedOptions(initialVariant?.selectedOptions);
@@ -199,7 +198,6 @@ export default function Product() {
             selectedVariant={selectedVariant}
           />
         </div>
-
         {/* Right Column - Product Info */}
         <div>
           <div className="grid gap-8 lg:gap-12">
@@ -225,34 +223,24 @@ export default function Product() {
               setPercentageSaved={setPercentageSaved}
               douTotalComparePrice={douTotalComparePrice}
               setDouTotalComparePrice={setDouTotalComparePrice}
+              addedToCart={addedToCart}
+              setAddedToCart={setAddedToCart}
             />
           </div>
 
           {/* Recommended Products */}
           <ProductDetails description={product.description} />
         </div>
-
-        
-
       </div>
-
-    
-    
-
       {/* Products Slider */}
       <ProductPageProductSlider products={poloProducts} />
 
       {/* Product Features Section */}
       <ProductFeatures />
-
-
       <RecommendedProducts products={newArrivals} />
-      
       {/* Insurance Features Section */}
       <InsuranceFeatures />
-
       <ImageSlider />
-      
     </div>
   );
 }
@@ -313,7 +301,7 @@ const PRODUCT_FRAGMENT = `#graphql
         height
       }
     }
-    variants(first: 50) {
+    variants(first: 100) {
       nodes {
         ...ProductVariant
       }
