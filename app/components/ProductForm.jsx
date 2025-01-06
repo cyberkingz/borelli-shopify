@@ -37,7 +37,7 @@ const PAYMENT_METHODS = [
  *   vendor: string;
  * }}
  */
-export function ProductForm({productOptions, product, selectedVariant, firstSelectedVariant, setFirstSelectedVariant, secondSelectedVariant, setSecondSelectedVariant, title, vendor, douSelected, setDouSelected, firstSelectedOptions, setFirstSelectedOptions, secondSelectedOptions, setSecondSelectedOptions, douTotalPrice, setDouTotalPrice, percentageSaved, setPercentageSaved}) {
+export function ProductForm({productOptions, product, selectedVariant, firstSelectedVariant, setFirstSelectedVariant, secondSelectedVariant, setSecondSelectedVariant, title, vendor, douSelected, setDouSelected, firstSelectedOptions, setFirstSelectedOptions, secondSelectedOptions, setSecondSelectedOptions, douTotalPrice, setDouTotalPrice, percentageSaved, setPercentageSaved, douTotalComparePrice, setDouTotalComparePrice}) {
   const navigate = useNavigate();
   const {open} = useAside();
   const onChangeHandler = (event) => {
@@ -58,6 +58,8 @@ export function ProductForm({productOptions, product, selectedVariant, firstSele
           setPercentageSaved(parseInt(discountPercentage));
           const totalAmount = parseFloat(node?.price?.amount) + parseFloat(node?.price?.amount);
           setDouTotalPrice({amount: totalAmount.toLocaleString(), currencyCode: node?.price?.currencyCode });
+          const totalCompareAmount = parseFloat(node?.compareAtPrice?.amount) + parseFloat(node?.compareAtPrice?.amount);
+          setDouTotalComparePrice({amount: totalCompareAmount.toLocaleString(), currencyCode: node?.compareAtPrice?.currencyCode });
         }
       })   
     }
@@ -77,6 +79,8 @@ export function ProductForm({productOptions, product, selectedVariant, firstSele
           setPercentageSaved(parseInt(discountPercentage));
           const totalAmount = parseFloat(node?.price?.amount) + parseFloat(node?.price?.amount);
           setDouTotalPrice({amount: totalAmount.toLocaleString(), currencyCode: node?.price?.currencyCode });
+          const totalCompareAmount = parseFloat(node?.compareAtPrice?.amount) + parseFloat(node?.compareAtPrice?.amount);
+          setDouTotalComparePrice({amount: totalCompareAmount.toLocaleString(), currencyCode: node?.compareAtPrice?.currencyCode });
         }
       })   
     }
@@ -196,9 +200,9 @@ export function ProductForm({productOptions, product, selectedVariant, firstSele
                 )}               
               </div>
               <div className="compare-at-price">
-                {selectedVariant?.compareAtPrice && (
+                {douTotalComparePrice > douTotalPrice && (
                   <Money
-                    data={selectedVariant.compareAtPrice}
+                    data={douTotalComparePrice}
                     className="text-1xl text-gray-500 line-through"
                   />
                 )}

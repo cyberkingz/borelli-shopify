@@ -144,6 +144,7 @@ export default function Product() {
   const [secondSelectedOptions, setSecondSelectedOptions] = useState([]);
   const [percentageSaved, setPercentageSaved] = useState(0);
   const [douTotalPrice, setDouTotalPrice] = useState(0);
+  const [douTotalComparePrice, setDouTotalComparePrice] = useState(0);
   // Get the current URL parameters
   const [searchParams] = useSearchParams();
   const colorOption = searchParams.get('Color');
@@ -183,7 +184,8 @@ export default function Product() {
     setPercentageSaved(parseInt(discountPercentage));
     const totalAmount = parseFloat(initialVariant?.price?.amount) + parseFloat(initialVariant?.price?.amount);
     setDouTotalPrice({amount: totalAmount.toLocaleString(), currencyCode: initialVariant?.price?.currencyCode });
-
+    const totalCompareAmount = parseFloat(initialVariant?.compareAtPrice?.amount) + parseFloat(initialVariant?.compareAtPrice?.amount);
+    setDouTotalComparePrice({amount: totalCompareAmount.toLocaleString(), currencyCode: initialVariant?.compareAtPrice?.currencyCode })
   },[initialVariant])
   
   return (
@@ -221,6 +223,8 @@ export default function Product() {
               setDouTotalPrice={setDouTotalPrice}
               percentageSaved={percentageSaved}
               setPercentageSaved={setPercentageSaved}
+              douTotalComparePrice={douTotalComparePrice}
+              setDouTotalComparePrice={setDouTotalComparePrice}
             />
           </div>
 
