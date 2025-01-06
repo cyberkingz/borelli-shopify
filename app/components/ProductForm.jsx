@@ -85,7 +85,7 @@ export function ProductForm({productOptions, product, selectedVariant, firstSele
       })   
     }
   }
-  
+ 
   return (
     <div className="flex flex-col gap-6">
       {/* Product Title */}
@@ -200,7 +200,7 @@ export function ProductForm({productOptions, product, selectedVariant, firstSele
                 )}               
               </div>
               <div className="compare-at-price">
-                {douTotalComparePrice > douTotalPrice && (
+                {parseFloat(douTotalComparePrice?.amount) > parseFloat(douTotalPrice?.amount) && (
                   <Money
                     data={douTotalComparePrice}
                     className="text-1xl text-gray-500 line-through"

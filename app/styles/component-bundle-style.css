@@ -45,6 +45,7 @@
 .product-page-bundle label .content .duo-options-container .dou-option {
     display: flex;
     gap: 10px;
+    flex-wrap: wrap;
 }
 .product-page-bundle label.active {
     border: 1px solid #2B555A;
