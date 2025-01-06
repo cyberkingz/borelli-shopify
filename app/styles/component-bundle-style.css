@@ -23,7 +23,12 @@
     flex: 0 0 50px;
 }
 .product-page-bundle label .pricing {
-    flex: 0 0 auto;
+    flex: 0 0 8rem;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    height: 100%;
+    justify-content: right;
 }
 .product-page-bundle label .pricing .price {
     text-align: right;
@@ -53,6 +58,9 @@
     color: #fff;
     padding: 2px 8px;
     font-size: 14px;
+}
+.product-page-bundle label .content .sub-heading {
+    font-size: 13px;
 }
 @media screen and (max-width: 768px) {
     .product-page-bundle {
