@@ -60,7 +60,12 @@ export function ProductForm({
   douTotalComparePrice, 
   setDouTotalComparePrice,
   addedToCart,
-  setAddedToCart}) {
+  setAddedToCart,
+  singleSelectedVariant,
+  setSingleSelectedVariant,
+  singleSelectedOptions,
+  setSingleSelectedOptions  
+}) {
   const navigate = useNavigate();
   const {open} = useAside();
   const onChangeHandler = (event) => {
@@ -152,6 +157,11 @@ export function ProductForm({
               key={option.name} 
               option={option}
               productTitle={title}
+              singleSelectedVariant={singleSelectedVariant}
+              setSingleSelectedVariant={setSingleSelectedVariant}
+              singleSelectedOptions={singleSelectedOptions}
+              setSingleSelectedOptions={setSingleSelectedOptions}
+              product={product}
             />
           </div>
         ))}
@@ -272,13 +282,13 @@ export function ProductForm({
       {/* Add to Cart Button */}
       <div className="w-full">
         <AddToCartButton
-          disabled={!selectedVariant || !selectedVariant.availableForSale}
+          disabled={!singleSelectedVariant || !singleSelectedVariant.availableForSale}
           onClick={() => open('cart')}
           lines={
-            douSelected === 'single' && selectedVariant
+            douSelected === 'single' && singleSelectedVariant
               ? [
                   {
-                    merchandiseId: selectedVariant.id,
+                    merchandiseId: singleSelectedVariant.id,
                     quantity: 1,
                   },
                 ]

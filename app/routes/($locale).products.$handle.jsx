@@ -138,8 +138,10 @@ function loadDeferredData({context, params}) {
 export default function Product() {
   const {product, newArrivals, poloProducts} = useLoaderData();
   const [douSelected, setDouSelected] = useState('single');
+  const [singleSelectedVariant, setSingleSelectedVariant] = useState(null);
   const [firstSelectedVariant, setFirstSelectedVariant] = useState(null);
   const [secondSelectedVariant, setSecondSelectedVariant] = useState(null);
+  const [singleSelectedOptions, setSingleSelectedOptions] = useState([]);
   const [firstSelectedOptions, setFirstSelectedOptions] = useState([]);
   const [secondSelectedOptions, setSecondSelectedOptions] = useState([]);
   const [percentageSaved, setPercentageSaved] = useState(0);
@@ -174,8 +176,10 @@ export default function Product() {
   });
   
   useEffect(() => {
+    setSingleSelectedVariant(initialVariant);
     setFirstSelectedVariant(initialVariant);
     setSecondSelectedVariant(initialVariant);
+    setSingleSelectedOptions(initialVariant?.selectedOptions);
     setFirstSelectedOptions(initialVariant?.selectedOptions);
     setSecondSelectedOptions(initialVariant?.selectedOptions);
     const discountAmount = parseFloat(initialVariant?.compareAtPrice?.amount) - parseFloat(initialVariant?.price?.amount);
@@ -186,6 +190,7 @@ export default function Product() {
     const totalCompareAmount = parseFloat(initialVariant?.compareAtPrice?.amount) + parseFloat(initialVariant?.compareAtPrice?.amount);
     setDouTotalComparePrice({amount: totalCompareAmount.toLocaleString(), currencyCode: initialVariant?.compareAtPrice?.currencyCode })
   },[initialVariant])
+  
   
   return (
     <div className="mx-auto max-w-7xl px-4 md:px-8 lg:px-12">
@@ -225,6 +230,10 @@ export default function Product() {
               setDouTotalComparePrice={setDouTotalComparePrice}
               addedToCart={addedToCart}
               setAddedToCart={setAddedToCart}
+              singleSelectedVariant={singleSelectedVariant}
+              setSingleSelectedVariant={setSingleSelectedVariant}
+              singleSelectedOptions={singleSelectedOptions}
+              setSingleSelectedOptions={setSingleSelectedOptions}
             />
           </div>
 
