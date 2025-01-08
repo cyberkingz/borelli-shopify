@@ -84,11 +84,11 @@ export function ProductSlider({title, subtitle, products = []}) {
                     {product.title}
                   </h3>
                   <div className="mt-1 flex items-center justify-center gap-2">
-                    <span className={isOnSale ? "text-red-600" : ""}>
+                    <span className={isOnSale ? "text-gray-900" : ""}>
                       {formatPrice(price.amount, price.currencyCode)}
                     </span>
                     {isOnSale && (
-                      <span className="text-gray-500 line-through">
+                      <span className="text-red-500 line-through">
                         {formatPrice(compareAtPrice.amount, compareAtPrice.currencyCode)}
                       </span>
                     )}
