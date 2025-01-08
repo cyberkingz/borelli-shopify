@@ -37,7 +37,35 @@ const PAYMENT_METHODS = [
  *   vendor: string;
  * }}
  */
-export function ProductForm({productOptions, product, selectedVariant, firstSelectedVariant, setFirstSelectedVariant, secondSelectedVariant, setSecondSelectedVariant, title, vendor, douSelected, setDouSelected, firstSelectedOptions, setFirstSelectedOptions, secondSelectedOptions, setSecondSelectedOptions, douTotalPrice, setDouTotalPrice}) {
+export function ProductForm({
+  productOptions, 
+  product, 
+  selectedVariant, 
+  firstSelectedVariant, 
+  setFirstSelectedVariant, 
+  secondSelectedVariant, 
+  setSecondSelectedVariant, 
+  title, 
+  vendor, 
+  douSelected, 
+  setDouSelected, 
+  firstSelectedOptions, 
+  setFirstSelectedOptions, 
+  secondSelectedOptions, 
+  setSecondSelectedOptions, 
+  douTotalPrice, 
+  setDouTotalPrice, 
+  percentageSaved, 
+  setPercentageSaved, 
+  douTotalComparePrice, 
+  setDouTotalComparePrice,
+  addedToCart,
+  setAddedToCart,
+  singleSelectedVariant,
+  setSingleSelectedVariant,
+  singleSelectedOptions,
+  setSingleSelectedOptions  
+}) {
   const navigate = useNavigate();
   const {open} = useAside();
   const onChangeHandler = (event) => {
@@ -50,11 +78,18 @@ export function ProductForm({productOptions, product, selectedVariant, firstSele
         return item;
       });   
       setFirstSelectedOptions(NewValues);
+      const normalizedNewValues = JSON.stringify(NewValues).replace(/\s+/g, '').toLowerCase();
       product.variants.nodes.map(node => {
-        if(JSON.stringify(node?.selectedOptions) === JSON.stringify(NewValues)) {
+        const normalizedSelectedOptions = JSON.stringify(node?.selectedOptions).replace(/\s+/g, '').toLowerCase();
+        if(normalizedSelectedOptions === normalizedNewValues) {
           setFirstSelectedVariant(node);
+          const discountAmount = parseFloat(node?.compareAtPrice?.amount) - parseFloat(node?.price?.amount);
+          const discountPercentage = (discountAmount / 100) * 100;
+          setPercentageSaved(parseInt(discountPercentage));
           const totalAmount = parseFloat(node?.price?.amount) + parseFloat(node?.price?.amount);
           setDouTotalPrice({amount: totalAmount.toLocaleString(), currencyCode: node?.price?.currencyCode });
+          const totalCompareAmount = parseFloat(node?.compareAtPrice?.amount) + parseFloat(node?.compareAtPrice?.amount);
+          setDouTotalComparePrice({amount: totalCompareAmount.toLocaleString(), currencyCode: node?.compareAtPrice?.currencyCode });
         }
       })   
     }
@@ -66,15 +101,29 @@ export function ProductForm({productOptions, product, selectedVariant, firstSele
         return item;
       });      
       setSecondSelectedOptions(NewValues);
+      const normalizedNewValues = JSON.stringify(NewValues).replace(/\s+/g, '').toLowerCase();
       product.variants.nodes.map(node => {
-        if(JSON.stringify(node?.selectedOptions) === JSON.stringify(NewValues)) {
+        const normalizedSelectedOptions = JSON.stringify(node?.selectedOptions).replace(/\s+/g, '').toLowerCase();
+        if(normalizedSelectedOptions === normalizedNewValues) {
           setSecondSelectedVariant(node);
+          const discountAmount = parseFloat(node?.compareAtPrice?.amount) - parseFloat(node?.price?.amount);
+          const discountPercentage = (discountAmount / 100) * 100;
+          setPercentageSaved(parseInt(discountPercentage));
           const totalAmount = parseFloat(node?.price?.amount) + parseFloat(node?.price?.amount);
           setDouTotalPrice({amount: totalAmount.toLocaleString(), currencyCode: node?.price?.currencyCode });
+          const totalCompareAmount = parseFloat(node?.compareAtPrice?.amount) + parseFloat(node?.compareAtPrice?.amount);
+          setDouTotalComparePrice({amount: totalCompareAmount.toLocaleString(), currencyCode: node?.compareAtPrice?.currencyCode });
         }
       })   
     }
   }
+
+  useEffect(() => {
+    if(addedToCart === 'loading') {
+      setDouSelected('single');
+    }
+
+  },[addedToCart])
 
   return (
     <div className="flex flex-col gap-6">
@@ -82,17 +131,22 @@ export function ProductForm({productOptions, product, selectedVariant, firstSele
       <span className="text-3xl font-bold m-0 mt-0">{title}</span>
 
       {/* Price */}
-      <div className="flex items-center">
+      <div className="flex items-center gap-2">
+        {selectedVariant?.compareAtPrice && (
+          <Money
+            data={selectedVariant.compareAtPrice}
+            className="text-3xl text-gray-500 line-through"
+          />
+        )}
         <Money 
           data={selectedVariant?.price}
           className="text-3xl font-semibold"
         />
-        {selectedVariant?.compareAtPrice && (
-          <Money
-            data={selectedVariant.compareAtPrice}
-            className="text-gray-500 line-through"
-          />
-        )}
+       {percentageSaved > 0  && (
+        <div className="bg-[#2B555A] text-white py-1 px-2 text-[12px] uppercase">
+          {`Save ${parseInt(percentageSaved)}%`}
+        </div>
+       )}
       </div>
 
       {/* Product Options */}
@@ -103,6 +157,11 @@ export function ProductForm({productOptions, product, selectedVariant, firstSele
               key={option.name} 
               option={option}
               productTitle={title}
+              singleSelectedVariant={singleSelectedVariant}
+              setSingleSelectedVariant={setSingleSelectedVariant}
+              singleSelectedOptions={singleSelectedOptions}
+              setSingleSelectedOptions={setSingleSelectedOptions}
+              product={product}
             />
           </div>
         ))}
@@ -121,14 +180,14 @@ export function ProductForm({productOptions, product, selectedVariant, firstSele
               <div className="price">
                 <Money 
                   data={selectedVariant?.price}
-                  className="text-3xl font-semibold"
+                  className="text-1xl font-semibold"
                 />
               </div>
               <div className="compare-at-price">
                 {selectedVariant?.compareAtPrice && (
                   <Money
                     data={selectedVariant.compareAtPrice}
-                    className="text-gray-500 line-through"
+                    className="text-1xl text-gray-500 line-through"
                   />
                 )}
               </div>
@@ -141,8 +200,10 @@ export function ProductForm({productOptions, product, selectedVariant, firstSele
             </div>
             <div className="content">
               <span className="heading">DUO</span>
-              <span className="sub-heading">Save an extra 10% per item</span>
-              {douSelected === 'double' && (
+              {percentageSaved > 0 && (
+                <span className="sub-heading">{`Save an extra ${percentageSaved}% per item`}</span>
+              )}            
+              {douSelected === 'double' && firstSelectedOptions && secondSelectedOptions && (
                   <div className="duo-options-container">
                   {/* First variant selection */}
                   <div className="dou-option">
@@ -178,15 +239,15 @@ export function ProductForm({productOptions, product, selectedVariant, firstSele
                 {douTotalPrice && (
                     <Money 
                     data={douTotalPrice}
-                    className="text-3xl font-semibold"
+                    className="text-1xl font-semibold"
                     />
                 )}               
               </div>
               <div className="compare-at-price">
-                {selectedVariant?.compareAtPrice && (
+                {parseFloat(douTotalComparePrice?.amount) > parseFloat(douTotalPrice?.amount) && (
                   <Money
-                    data={selectedVariant.compareAtPrice}
-                    className="text-gray-500 line-through"
+                    data={douTotalComparePrice}
+                    className="text-1xl text-gray-500 line-through"
                   />
                 )}
               </div>
@@ -221,13 +282,13 @@ export function ProductForm({productOptions, product, selectedVariant, firstSele
       {/* Add to Cart Button */}
       <div className="w-full">
         <AddToCartButton
-          disabled={!selectedVariant || !selectedVariant.availableForSale}
+          disabled={!singleSelectedVariant || !singleSelectedVariant.availableForSale}
           onClick={() => open('cart')}
           lines={
-            douSelected === 'single' && selectedVariant
+            douSelected === 'single' && singleSelectedVariant
               ? [
                   {
-                    merchandiseId: selectedVariant.id,
+                    merchandiseId: singleSelectedVariant.id,
                     quantity: 1,
                   },
                 ]
@@ -244,9 +305,12 @@ export function ProductForm({productOptions, product, selectedVariant, firstSele
                 ]
             : []
           }
+          addedToCart={addedToCart}
+          setAddedToCart={setAddedToCart}
           className="!bg-black hover:!bg-gray-900 !w-full"
         >
-          {selectedVariant?.availableForSale ? 'Add to Cart' : 'Sold Out'}
+          {douSelected === 'single' && selectedVariant?.availableForSale ? 'Add to Cart' : douSelected === 'single' && 'Sold Out'}
+          {douSelected === 'double' && firstSelectedVariant?.availableForSale && secondSelectedVariant?.availableForSale ? 'Add to Cart' : douSelected === 'double' && 'Sold Out'}
         </AddToCartButton>
       </div>
 

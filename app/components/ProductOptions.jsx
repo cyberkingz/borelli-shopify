@@ -11,7 +11,15 @@ import {SizeFinder} from './SizeFinder';
  *   product: any;
  * }}
  */
-export function ProductOptions({option, productTitle, product}) {
+export function ProductOptions({
+  option, 
+  productTitle, 
+  product,
+  singleSelectedVariant,
+  setSingleSelectedVariant,
+  singleSelectedOptions,
+  setSingleSelectedOptions
+}) {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [isOpen, setIsOpen] = useState(false);
@@ -41,6 +49,23 @@ export function ProductOptions({option, productTitle, product}) {
   const showDropdown = isSize && option.optionValues.length > 4;
 
   const handleOptionChange = (optionName, optionValue) => {
+    const NewValues = singleSelectedOptions.map(item => {
+      if (item.name === optionName) {
+        return { ...item, value: optionValue };
+      }
+      return item;
+    });      
+   
+    setSingleSelectedOptions(NewValues);
+
+    const normalizedNewValues = JSON.stringify(NewValues).replace(/\s+/g, '').toLowerCase();
+      product.variants.nodes.map(node => {
+        const normalizedSelectedOptions = JSON.stringify(node?.selectedOptions).replace(/\s+/g, '').toLowerCase();
+        if(normalizedSelectedOptions === normalizedNewValues) {
+          setSingleSelectedVariant(node);
+        }
+      })   
+   
     const newSearchParams = new URLSearchParams(searchParams);
     
     // If it's a color option, we want to update it regardless of size
@@ -54,11 +79,6 @@ export function ProductOptions({option, productTitle, product}) {
       }
       newSearchParams.set(optionName, optionValue);
     }
-    
-    navigate(`?${newSearchParams.toString()}`, {
-      replace: true,
-      preventScrollReset: true,
-    });
   };
 
   return (
@@ -68,7 +88,7 @@ export function ProductOptions({option, productTitle, product}) {
           <div className="flex items-center">
             <span className="font-semibold uppercase min-w-[60px]">{option.name}:</span>
             <span className="text-sm text-gray-600 leading-none ml-2">
-              {searchParams.get(option.name) || ''}
+              {singleSelectedVariant?.selectedOptions[0]?.value}
             </span>
           </div>
         ) : showDropdown ? (
@@ -76,7 +96,7 @@ export function ProductOptions({option, productTitle, product}) {
             <div className="flex items-center">
               <span className="font-semibold uppercase min-w-[60px]">{option.name}:</span>
               <span className="text-sm text-gray-600 leading-none">
-                {searchParams.get(option.name) || ''}
+                {singleSelectedVariant?.selectedOptions[1]?.value}
               </span>
             </div>
             {option.name.toLowerCase() === 'size' && (
@@ -122,6 +142,7 @@ export function ProductOptions({option, productTitle, product}) {
                   available={opt.available}
                   onClick={() => handleOptionChange(option.name, opt.name)}
                   customColor={colorMetafield?.value}
+                  singleSelectedVariant={singleSelectedVariant}
                 />
               );
             }
@@ -136,6 +157,7 @@ export function ProductOptions({option, productTitle, product}) {
                 selected={isSelected}
                 available={opt.available}
                 onClick={() => handleOptionChange(option.name, opt.name)}
+                singleSelectedVariant={singleSelectedVariant}
               />
             );
           })}
@@ -158,7 +180,7 @@ export function ProductOptions({option, productTitle, product}) {
                 ${isOpen ? 'border-black' : ''}
               `}
             >
-              <span>{searchParams.get(option.name) || `Select ${option.name}`}</span>
+              <span>{singleSelectedVariant?.selectedOptions[1]?.value}</span>
               <svg 
                 className={`w-4 h-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
                 fill="none" 
@@ -220,7 +242,7 @@ export function ProductOptions({option, productTitle, product}) {
 /**
  * Color swatch component
  */
-function ColorSwatch({name, handle, selected, available, onClick, customColor}) {
+function ColorSwatch({name, handle, selected, available, onClick, customColor, singleSelectedVariant}) {
   // Map color names to actual CSS color values
   const colorMap = {
     'white': '#FFFFFF',
@@ -240,7 +262,7 @@ function ColorSwatch({name, handle, selected, available, onClick, customColor}) 
         relative w-8 h-8 rounded-full overflow-hidden
         transition-all duration-200
         ring-1 ring-gray-400
-        ${selected ? 'ring-2 ring-offset-2 ring-black' : ''}
+        ${singleSelectedVariant?.selectedOptions[0]?.value === name ? 'ring-2 ring-offset-2 ring-black' : ''}
         ${!available ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:scale-110'}
       `}
       style={{
@@ -256,7 +278,7 @@ function ColorSwatch({name, handle, selected, available, onClick, customColor}) 
 /**
  * Size option component
  */
-function SizeOption({name, handle, selected, available, onClick}) {
+function SizeOption({name, handle, selected, available, onClick, singleSelectedVariant}) {
   
   return (
     <button

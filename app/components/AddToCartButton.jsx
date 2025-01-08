@@ -1,4 +1,5 @@
-import {CartForm} from '@shopify/hydrogen';
+import { useEffect } from 'react';
+import { CartForm } from '@shopify/hydrogen';
 
 /**
  * @param {{
@@ -7,6 +8,8 @@ import {CartForm} from '@shopify/hydrogen';
  *   disabled?: boolean;
  *   lines: Array<OptimisticCartLineInput>;
  *   onClick?: () => void;
+ *   addedToCart: boolean;
+ *   setAddedToCart: (state: string) => void;
  *   className?: string;
  * }}
  */
@@ -16,13 +19,22 @@ export function AddToCartButton({
   disabled,
   lines,
   onClick,
+  addedToCart,
+  setAddedToCart,
   className = '',
 }) {
   return (
-    <CartForm route="/cart" inputs={{lines}} action={CartForm.ACTIONS.LinesAdd}>
+    <CartForm route="/cart" inputs={{ lines }} action={CartForm.ACTIONS.LinesAdd}>
       {(fetcher) => {
         const isAdding = fetcher.state !== 'idle';
-        
+
+        // UseEffect to set addedToCart only after the render
+        useEffect(() => {
+          if (fetcher.state !== 'idle') {
+            setAddedToCart(fetcher.state);
+          }
+        }, [fetcher.state, setAddedToCart]);
+
         return (
           <>
             <input
@@ -33,7 +45,7 @@ export function AddToCartButton({
             <button
               type="submit"
               onClick={onClick}
-              disabled={disabled ?? isAdding}
+              disabled={disabled || isAdding}
               className={`
                 reset
                 w-full min-w-full h-[60px] py-4 text-[16px] font-medium
@@ -41,7 +53,7 @@ export function AddToCartButton({
                 transition-all duration-200 ease-out
                 shadow-[0_4px_10px_rgba(0,0,0,0.15)]
                 hover:shadow-[0_6px_20px_rgba(0,0,0,0.25)]
-                ${disabled 
+                ${disabled
                   ? 'bg-gray-200 text-gray-500 cursor-not-allowed shadow-none'
                   : isAdding
                   ? 'bg-gray-800 text-white'

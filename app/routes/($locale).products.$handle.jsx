@@ -138,15 +138,19 @@ function loadDeferredData({context, params}) {
 export default function Product() {
   const {product, newArrivals, poloProducts} = useLoaderData();
   const [douSelected, setDouSelected] = useState('single');
+  const [singleSelectedVariant, setSingleSelectedVariant] = useState(null);
   const [firstSelectedVariant, setFirstSelectedVariant] = useState(null);
   const [secondSelectedVariant, setSecondSelectedVariant] = useState(null);
+  const [singleSelectedOptions, setSingleSelectedOptions] = useState([]);
   const [firstSelectedOptions, setFirstSelectedOptions] = useState([]);
   const [secondSelectedOptions, setSecondSelectedOptions] = useState([]);
+  const [percentageSaved, setPercentageSaved] = useState(0);
   const [douTotalPrice, setDouTotalPrice] = useState(0);
+  const [douTotalComparePrice, setDouTotalComparePrice] = useState(0);
+  const [addedToCart, setAddedToCart] = useState('idle');
   // Get the current URL parameters
   const [searchParams] = useSearchParams();
   const colorOption = searchParams.get('Color');
-  
   // Find the variant that matches the selected color
   let initialVariant = product.selectedOrFirstAvailableVariant;
   if (colorOption) {
@@ -172,16 +176,21 @@ export default function Product() {
   });
   
   useEffect(() => {
-    
+    setSingleSelectedVariant(initialVariant);
     setFirstSelectedVariant(initialVariant);
     setSecondSelectedVariant(initialVariant);
+    setSingleSelectedOptions(initialVariant?.selectedOptions);
     setFirstSelectedOptions(initialVariant?.selectedOptions);
     setSecondSelectedOptions(initialVariant?.selectedOptions);
-    
+    const discountAmount = parseFloat(initialVariant?.compareAtPrice?.amount) - parseFloat(initialVariant?.price?.amount);
+    const discountPercentage = (discountAmount / 100) * 100;
+    setPercentageSaved(parseInt(discountPercentage));
     const totalAmount = parseFloat(initialVariant?.price?.amount) + parseFloat(initialVariant?.price?.amount);
     setDouTotalPrice({amount: totalAmount.toLocaleString(), currencyCode: initialVariant?.price?.currencyCode });
-
+    const totalCompareAmount = parseFloat(initialVariant?.compareAtPrice?.amount) + parseFloat(initialVariant?.compareAtPrice?.amount);
+    setDouTotalComparePrice({amount: totalCompareAmount.toLocaleString(), currencyCode: initialVariant?.compareAtPrice?.currencyCode })
   },[initialVariant])
+  
   
   return (
     <div className="mx-auto max-w-7xl px-4 md:px-8 lg:px-12">
@@ -194,7 +203,6 @@ export default function Product() {
             selectedVariant={selectedVariant}
           />
         </div>
-
         {/* Right Column - Product Info */}
         <div>
           <div className="grid gap-8 lg:gap-12">
@@ -216,34 +224,32 @@ export default function Product() {
               setSecondSelectedOptions={setSecondSelectedOptions}
               douTotalPrice={douTotalPrice}
               setDouTotalPrice={setDouTotalPrice}
+              percentageSaved={percentageSaved}
+              setPercentageSaved={setPercentageSaved}
+              douTotalComparePrice={douTotalComparePrice}
+              setDouTotalComparePrice={setDouTotalComparePrice}
+              addedToCart={addedToCart}
+              setAddedToCart={setAddedToCart}
+              singleSelectedVariant={singleSelectedVariant}
+              setSingleSelectedVariant={setSingleSelectedVariant}
+              singleSelectedOptions={singleSelectedOptions}
+              setSingleSelectedOptions={setSingleSelectedOptions}
             />
           </div>
 
           {/* Recommended Products */}
           <ProductDetails description={product.description} />
         </div>
-
-        
-
       </div>
-
-    
-    
-
       {/* Products Slider */}
       <ProductPageProductSlider products={poloProducts} />
 
       {/* Product Features Section */}
       <ProductFeatures />
-
-
       <RecommendedProducts products={newArrivals} />
-      
       {/* Insurance Features Section */}
       <InsuranceFeatures />
-
       <ImageSlider />
-      
     </div>
   );
 }
@@ -304,7 +310,7 @@ const PRODUCT_FRAGMENT = `#graphql
         height
       }
     }
-    variants(first: 50) {
+    variants(first: 100) {
       nodes {
         ...ProductVariant
       }
