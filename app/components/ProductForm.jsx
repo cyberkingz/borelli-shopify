@@ -187,7 +187,7 @@ export function ProductForm({
                 {selectedVariant?.compareAtPrice && (
                   <Money
                     data={selectedVariant.compareAtPrice}
-                    className="text-1xl text-gray-500 line-through"
+                    className="text-1xl text-red-500 line-through"
                   />
                 )}
               </div>
@@ -247,7 +247,7 @@ export function ProductForm({
                 {parseFloat(douTotalComparePrice?.amount) > parseFloat(douTotalPrice?.amount) && (
                   <Money
                     data={douTotalComparePrice}
-                    className="text-1xl text-gray-500 line-through"
+                    className="text-1xl text-red-500 line-through"
                   />
                 )}
               </div>
