@@ -249,11 +249,14 @@ function ColorSwatch({name, handle, selected, available, onClick, customColor, s
     'brown': '#8B4513',
     'fog blue': '#CDE3F7',
     'marine blue': '#003366',
+    'dark gray': '#A9A9A9',
+    'caramel': '#C68E17',
+    'ocean blue': '#0077BE'
     // Add more colors as needed
   };
   
   const colorValue = customColor || colorMap[name.toLowerCase()] || name.toLowerCase();
-  
+  console.log(customColor);
   return (
     <button
       title={name}
