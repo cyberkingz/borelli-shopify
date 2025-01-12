@@ -1,5 +1,5 @@
 import {useLoaderData} from '@remix-run/react';
-import {CartForm} from '@shopify/hydrogen';
+import {Analytics, CartForm} from '@shopify/hydrogen';
 import {json} from '@shopify/remix-oxygen';
 import {CartMain} from '~/components/CartMain';
 
@@ -110,6 +110,7 @@ export default function Cart() {
     <div className="cart">
       <h1>Cart</h1>
       <CartMain layout="page" cart={cart} />
+      <Analytics.CartView />
     </div>
   );
 }
