@@ -82,7 +82,7 @@ export async function loader(args) {
     consent: {
       checkoutDomain: env.PUBLIC_CHECKOUT_DOMAIN,
       storefrontAccessToken: env.PUBLIC_STOREFRONT_API_TOKEN,
-      withPrivacyBanner: false,
+      withPrivacyBanner: true,
       // localize the privacy banner
       country: args.context.storefront.i18n.country,
       language: args.context.storefront.i18n.language,
@@ -174,6 +174,7 @@ export function Layout({children}) {
               cart={data.cart}
               shop={data.shop}
               consent={data.consent}
+               cookieDomain='barkerlondon.com'
             >
               <PageLayout {...data}>{children}</PageLayout>
               {/* <FacebookWebPixel /> */}
