@@ -3,6 +3,7 @@ import {AddToCartButton} from './AddToCartButton';
 import {useAside} from './Aside';
 import {Money} from '@shopify/hydrogen';
 import {ProductOptions} from './ProductOptions';
+import {useTranslation} from '~/hooks/useTranslation';
 
 // Import payment icons
 import amexIcon from '../assets/payment-icons/amex.svg';
@@ -68,6 +69,7 @@ export function ProductForm({
 }) {
   const navigate = useNavigate();
   const {open} = useAside();
+  const {t} = useTranslation();
   const onChangeHandler = (event) => {
     if(event.target.dataset.optionIndex === '1') {
     
@@ -144,7 +146,7 @@ export function ProductForm({
         />
        {percentageSaved > 0  && (
         <div className="bg-[#2B555A] text-white py-1 px-2 text-[12px] uppercase">
-          {`Save ${parseInt(percentageSaved)}%`}
+          {t('product.discount', { amount: parseInt(percentageSaved) })}
         </div>
        )}
       </div>
@@ -173,8 +175,8 @@ export function ProductForm({
             <input type="radio" name="bundle-option" value="single" id="single-bundle" checked={douSelected === 'single'} onChange={() => setDouSelected('single')} />
             </div>
             <div className="content">
-              <span className="heading">SINGLE</span>
-              <span className="sub-heading">Standard Price</span>
+              <span className="heading">{t('product.bundle.single')}</span>
+              <span className="sub-heading">{t('product.bundle.standardPrice')}</span>
             </div>
             <div className="pricing">
               <div className="price">
@@ -194,14 +196,16 @@ export function ProductForm({
             </div>
         </label>
         <label className={douSelected === 'double' ? `dou active` : `dou`} htmlFor="duo-bundle">
-            <div className="bundle-badge">BEST VALUE</div>
+            <div className="bundle-badge">{t('product.bundle.bestValue')}</div>
             <div className="radio">
             <input type="radio" name="bundle-option" value="duo" id="duo-bundle" checked={douSelected === 'double'} onChange={() => setDouSelected('double')} />
             </div>
             <div className="content">
-              <span className="heading">DUO</span>
+              <span className="heading">{t('product.bundle.duo')}</span>
               {percentageSaved > 0 && (
-                <span className="sub-heading">{`Save an extra ${percentageSaved}% per item`}</span>
+                <span className="sub-heading">
+                  {t('product.bundle.saveExtra', {percent: percentageSaved})}
+                </span>
               )}            
               {douSelected === 'double' && firstSelectedOptions && secondSelectedOptions && (
                   <div className="duo-options-container">
@@ -258,26 +262,30 @@ export function ProductForm({
       <div className="flex items-center gap-2 text-sm">
         <img 
           src={moneyBackIcon}
-          alt="Money Back Guarantee" 
+          alt={t('product.guarantee.moneyBack')}
           className="w-5 h-5"
         />
-        <span>Money Back Guarantee</span>
+        <span>{t('product.guarantee.moneyBack')}</span>
       </div>
 
       {/* Stock Status */}
-      {selectedVariant?.availableForSale ? (
-        <div className="flex items-center gap-2 mt-2">
-          <div className="relative">
-            <div className="w-2 h-2 bg-orange-500 rounded-full pulse-dot"></div>
-            <div className="absolute -inset-1 bg-orange-500/30 rounded-full animate-ping"></div>
-          </div>
-          <p className="text-orange-500 text-sm font-medium">
-            Only a few items left
+      <div className="flex items-center gap-2 mt-2">
+        {selectedVariant?.availableForSale ? (
+          <>
+            <div className="relative">
+              <div className="w-2 h-2 bg-orange-500 rounded-full pulse-dot"></div>
+              <div className="absolute -inset-1 bg-orange-500/30 rounded-full animate-ping"></div>
+            </div>
+            <p className="text-orange-500 text-sm font-medium">
+              {t('product.inventory.lowStock')}
+            </p>
+          </>
+        ) : (
+          <p className="text-red-500 text-sm font-medium">
+            {t('product.inventory.outOfStock')}
           </p>
-        </div>
-      ) : (
-        <p className="text-red-500 text-sm font-medium mt-2">Out of stock</p>
-      )}
+        )}
+      </div>
 
       {/* Add to Cart Button */}
       <div className="w-full">
@@ -329,70 +337,65 @@ export function ProductForm({
 
       {/* Product Details Accordions */}
       <div className="w-full mt-10">
-        <Accordion title="DESCRIPTION" defaultOpen={true}>
+        <Accordion title={t('product.accordion.description')} defaultOpen={true}>
           <div className="space-y-8">
             <div className="space-y-4">
-              <h3 className="font-medium text-black text-[16px]">Find a Time to Shine.</h3>
+              <h3 className="font-medium text-black text-[16px]">{t('product.accordion.productDetails.title')}</h3>
               <p className="text-gray-600 leading-relaxed">
-                Step up and step out. The Luxe Polo has a 100% double folded Supima cotton that has a 
-                voluminous feel and a bit of a shine to it. With a clean, 3 button placard, inset sleeve, and slim 
-                fit, finding the right occasion or person to shine for shouldn't be hard.
+                {t('product.accordion.productDetails.description')}
               </p>
             </div>
             <ul className="space-y-4">
               <li className="flex items-start gap-3">
                 <span className="w-2 h-2 rounded-full bg-gray-500 flex-shrink-0 mt-2"></span>
-                <span className="leading-relaxed">100% Double Folded Supima Cotton</span>
+                <span className="leading-relaxed">{t('product.accordion.productDetails.features.cotton')}</span>
               </li>
               <li className="flex items-start gap-3">
                 <span className="w-2 h-2 rounded-full bg-gray-500 flex-shrink-0 mt-2"></span>
-                <span className="leading-relaxed">Voluminous Feel with Subtle Shine</span>
+                <span className="leading-relaxed">{t('product.accordion.productDetails.features.feel')}</span>
               </li>
               <li className="flex items-start gap-3">
                 <span className="w-2 h-2 rounded-full bg-gray-500 flex-shrink-0 mt-2"></span>
-                <span className="leading-relaxed">Slim Fit with Clean 3-Button Design</span>
+                <span className="leading-relaxed">{t('product.accordion.productDetails.features.fit')}</span>
               </li>
             </ul>
           </div>
         </Accordion>
 
-        <Accordion title="SHIPPING INFO">
+        <Accordion title={t('product.accordion.shippingInfo')}>
           <div className="space-y-4">
             <div className="space-y-3">
-              <p className="font-medium">UPDATE:</p>
-              <p className="leading-relaxed">Due to an exceptionally high volume of orders, our shipping times may be delayed by 2-3 days beyond our usual lead times. We're working hard to get your order to you as quickly as possible and appreciate your understanding during this busy period.</p>
+              <p className="font-medium">{t('product.accordion.shipping.update')}</p>
+              <p className="leading-relaxed">{t('product.accordion.shipping.delay')}</p>
             </div>
             
             <div className="space-y-3">
               <div className="flex items-start gap-3">
                 <span className="w-2 h-2 rounded-full bg-gray-500 flex-shrink-0 mt-2"></span>
-                <p className="leading-relaxed">Netherlands & Belgium: 2-3 working days (free over €100)</p>
+                <p className="leading-relaxed">{t('product.accordion.shipping.times.benelux')}</p>
               </div>
               <div className="flex items-start gap-3">
                 <span className="w-2 h-2 rounded-full bg-gray-500 flex-shrink-0 mt-2"></span>
-                <p className="leading-relaxed">Germany: 2-3 working days (free over €100)</p>
+                <p className="leading-relaxed">{t('product.accordion.shipping.times.germany')}</p>
               </div>
               <div className="flex items-start gap-3">
                 <span className="w-2 h-2 rounded-full bg-gray-500 flex-shrink-0 mt-2"></span>
-                <p className="leading-relaxed">Rest of Europe: 4-8 working days (free over €150)</p>
+                <p className="leading-relaxed">{t('product.accordion.shipping.times.europe')}</p>
               </div>
               <div className="flex items-start gap-3">
                 <span className="w-2 h-2 rounded-full bg-gray-500 flex-shrink-0 mt-2"></span>
-                <p className="leading-relaxed">Rest of the world: 4-8 working days (free over €150)</p>
+                <p className="leading-relaxed">
+                  {t('product.accordion.shipping.times.more')} <Link to="/pages/shipping" className="underline">{t('common.here')}</Link>.
+                </p>
               </div>
             </div>
-
-            <p className="leading-relaxed">
-              For more information please see our shipping page <Link to="/pages/shipping" className="underline">here</Link>.
-            </p>
           </div>
         </Accordion>
 
-        <Accordion title="14 DAY EASY RETURNS">
+        <Accordion title={t('product.accordion.returnsPolicy.title')}>
           <div className="space-y-4">
             <p className="leading-relaxed">
-              We offer a 14 day return or exchange policy if you are not happy with your order for any reason. 
-              For more information please see our Return Policy <Link to="/pages/returns" className="underline">here</Link>.
+              {t('product.accordion.returnsPolicy.text')} {t('product.accordion.returnsPolicy.more')} <Link to="/pages/returns" className="underline">{t('common.here')}</Link>.
             </p>
           </div>
         </Accordion>

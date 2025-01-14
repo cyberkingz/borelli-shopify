@@ -1,6 +1,9 @@
 import {ChevronLeftIcon, ChevronRightIcon} from '@heroicons/react/24/outline';
+import {useTranslation} from '~/hooks/useTranslation';
 
 export function AnnouncementBar() {
+  const {t} = useTranslation();
+
   return (
     <div className="bg-[#2B555A] text-white py-3">
       <div className="container mx-auto px-4">
@@ -10,7 +13,7 @@ export function AnnouncementBar() {
           </button>
           
           <p className="text-sm font-medium">
-            FREE SHIPPING ON ORDERS ABOVE €150
+            {t('announcement.freeShipping')}
           </p>
           
           <button>

@@ -1,5 +1,8 @@
 import {CartForm, Money} from '@shopify/hydrogen';
 import {useRef} from 'react';
+import {useLocation} from '@remix-run/react';
+import {getMarketByLocale} from '~/config/markets';
+import {useTranslation} from '~/hooks/useTranslation';
 
 /**
  * @param {CartSummaryProps}
@@ -8,13 +11,31 @@ export function CartSummary({cart, layout}) {
   const className =
     layout === 'page' ? 'cart-summary-page' : 'cart-summary-aside';
 
+  const location = useLocation();
+  const [, locale] = location.pathname.split('/');
+  const market = getMarketByLocale(locale);
+  const {t} = useTranslation();
+
+  // Calculate total from line items using the discounted price per quantity
+  let totalAmount = 0;
+  cart.lines?.nodes?.forEach(line => {
+    // For each line item, use amountPerQuantity (includes bundle discount) if available
+    const amount = line.cost.amountPerQuantity?.amount || line.cost.totalAmount?.amount || 0;
+    totalAmount += parseFloat(amount) * line.quantity;
+  });
+
+  const subtotal = {
+    amount: totalAmount.toString(),
+    currencyCode: market.currency,
+  };
+
   return (
     <div aria-labelledby="cart-summary" className={className}>
-      <dl className="cart-subtotal font-bold text-2xl">
-        <dt>Subtotal :</dt>
+      <dl className="cart-subtotal font-bold text-2xl flex justify-between items-center">
+        <dt>{t('cart.subtotal')}</dt>
         <dd>
-          {cart.cost?.subtotalAmount?.amount ? (
-            <Money data={cart.cost?.subtotalAmount} />
+          {subtotal ? (
+            <Money data={subtotal} />
           ) : (
             '-'
           )}
@@ -29,6 +50,7 @@ export function CartSummary({cart, layout}) {
  * @param {{checkoutUrl?: string}}
  */
 function CartCheckoutActions({checkoutUrl}) {
+  const {t} = useTranslation();
   if (!checkoutUrl) return null;
 
   return (
@@ -43,7 +65,7 @@ function CartCheckoutActions({checkoutUrl}) {
           }
         }}
       >
-        Continue to Checkout &rarr;
+        {t('cart.checkout')} &rarr;
       </a>
     </div>
   );

@@ -2,25 +2,27 @@ import expressDelivery from '../assets/insurance/express-delivery.gif';
 import buyNowPayLater from '../assets/insurance/buy-now-pay-later.gif';
 import returnPolicy from '../assets/insurance/14-day-returns.gif';
 import {useEffect, useRef, useState} from 'react';
+import {useTranslation} from '~/hooks/useTranslation';
 
 export function InsuranceFeatures() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const sliderRef = useRef(null);
+  const {t} = useTranslation();
 
   const features = [
     {
-      title: 'Express delivery worldwide',
-      description: 'We deliver globally with with a secure, tracked shipping method, for the fastest & most reliable service. Free shipping for orders over €100 in The Netherlands, Belgium, and Germany | €150 for the rest of the world.',
+      titleKey: 'product.insurance.delivery.title',
+      descriptionKey: 'product.insurance.delivery.description',
       image: expressDelivery,
     },
     {
-      title: 'Buy now, pay later',
-      description: "Klarna gives you extra flexibility when paying for your order as you're able to pay within 30 days. Try your trousers first and then decide if you want to keep them.",
+      titleKey: 'product.insurance.payment.title',
+      descriptionKey: 'product.insurance.payment.description',
       image: buyNowPayLater,
     },
     {
-      title: '14 day returns',
-      description: "Didn't fit? - No problem! You can always return or exchange. We offer a 14 day returns or exchange policy if you are not happy with your order for any reason.",
+      titleKey: 'product.insurance.returns.title',
+      descriptionKey: 'product.insurance.returns.description',
       image: returnPolicy,
     },
   ];
@@ -89,13 +91,13 @@ export function InsuranceFeatures() {
                   <div className="w-20 h-20 mb-6">
                     <img 
                       src={feature.image} 
-                      alt={feature.title}
+                      alt={t(feature.titleKey)}
                       className="w-full h-full object-contain"
                     />
                   </div>
-                  <span className="text-2xl font-bold mb-3">{feature.title}</span>
+                  <span className="text-2xl font-bold mb-3">{t(feature.titleKey)}</span>
                   <p className="text-gray-600 text-sm leading-relaxed max-w-md">
-                    {feature.description}
+                    {t(feature.descriptionKey)}
                   </p>
                 </div>
               </div>
@@ -126,13 +128,13 @@ export function InsuranceFeatures() {
               <div className="w-20 h-20 mb-6">
                 <img 
                   src={feature.image} 
-                  alt={feature.title}
+                  alt={t(feature.titleKey)}
                   className="w-full h-full object-contain"
                 />
               </div>
-              <span className="text-2xl font-bold mb-3">{feature.title}</span>
+              <span className="text-2xl font-bold mb-3">{t(feature.titleKey)}</span>
               <p className="text-gray-600 text-sm leading-relaxed">
-                {feature.description}
+                {t(feature.descriptionKey)}
               </p>
             </div>
           ))}

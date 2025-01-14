@@ -1,15 +1,18 @@
 import { Link } from '@remix-run/react';
 import { Suspense } from 'react';
 import heroImage from '../assets/hero-banner.png';
+import { useTranslation } from '~/hooks/useTranslation';
 
 export function Hero() {
+  const {t} = useTranslation();
+
   return (
     <Suspense fallback={<div className="h-[600px] bg-black" />}>
       <section className="relative h-[600px] w-full home-hero">
         <div className="absolute inset-0 bg-black">
           <img
             src={heroImage}
-            alt="Hero banner"
+            alt={t('hero.title')}
             className="h-full w-full object-cover opacity-100"
             loading="eager"
           />
@@ -22,13 +25,13 @@ export function Hero() {
               {/* Headline Section */}
               <div className="space-y-4 flex flex-col gap-3 sm:space-y-6 w-full text-center sm:text-left">
                 <p className="text-white text-base sm:text-lg uppercase tracking-wide">
-                  Celebrate in Style
+                  {t('hero.tagline')}
                 </p>
                 <h1 className="hero-heading text-white font-bold uppercase">
-                  Holiday Sale
+                  {t('hero.title')}
                 </h1>
                 <p className="text-white text-lg sm:text-xl">
-                  Enjoy up to 65% off on seasonal favorites.
+                  {t('hero.description')}
                 </p>
                 {/* Button Section */}
                 <div className="w-full flex [&>*]:mx-auto sm:[&>*]:ml-0">
@@ -36,7 +39,7 @@ export function Hero() {
                     to="/collections/best-selling"
                     className="border border-white text-white px-8 py-3 uppercase transition-colors"
                   >
-                    Shop Now
+                    {t('hero.cta')}
                   </Link>
                 </div>
               </div>

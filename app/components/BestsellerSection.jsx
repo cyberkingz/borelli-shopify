@@ -1,7 +1,10 @@
 import {Link} from '@remix-run/react';
 import {Image} from '@shopify/hydrogen';
+import {useTranslation} from '~/hooks/useTranslation';
 
 export function BestsellerSection({collection}) {
+  const {t} = useTranslation();
+
   return (
     <section className="relative w-screen -ml-[50vw] left-1/2 h-[650px] md:h-[600px] my-16 mt-8">
       {/* Background Image with Overlay */}
@@ -27,12 +30,10 @@ export function BestsellerSection({collection}) {
             {/* Main Content */}
             <div className="space-y-6">
               <span className="text-2xl md:text-2xl lg:text-4xl font-bold leading-tight tracking-tight">
-                The sky is not the limit, the limit is your vision.
+                {t('bestseller.title')}
               </span>
               <p className="text-gray-700/90 text-sm md:text-base leading-relaxed">
-                In just a few years, the Amsterdam-based label is now part of the Dutch 
-                capital's burgeoning streetwear scene and a leading global destination for 
-                the latest perfect fitting menswear.
+                {t('bestseller.description')}
               </p>
             </div>
 
@@ -42,7 +43,7 @@ export function BestsellerSection({collection}) {
                 to="/collections/best-selling"
                 className="group relative inline-block bg-black/95 text-white px-10 py-4 uppercase text-sm tracking-widest font-medium hover:bg-black transition-all duration-300 w-fit hover:shadow-xl"
               >
-                <span className="relative z-10">Shop bestsellers</span>
+                <span className="relative z-10">{t('bestseller.cta')}</span>
                 <div className="absolute inset-0 bg-white/10 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
               </Link>
             </div>

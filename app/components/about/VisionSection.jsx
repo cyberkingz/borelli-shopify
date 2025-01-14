@@ -1,7 +1,10 @@
 import {Image} from '@shopify/hydrogen';
+import {useTranslation} from '~/hooks/useTranslation';
 import visionImage from '../../assets/about-us/OUR-VISION.jpg';
 
 export function VisionSection() {
+  const {t} = useTranslation();
+
   return (
     <div className="py-24 bg-white">
       <div className="container mx-auto px-4">
@@ -15,12 +18,9 @@ export function VisionSection() {
               />
             </div>
             <div className="flex flex-col gap-4">
-              <span className="text-4xl font-bold">OUR VISION</span>
+              <span className="text-4xl font-bold">{t('about.vision.title')}</span>
               <p className="text-gray-600">
-                Our vision is simple yet powerful: to offer the perfect fit, premium quality
-                clothing that every self-care-conscious man deserves. We continually
-                innovate and elevate our offerings, ensuring that every item we create
-                embodies our commitment to the perfect fit.
+                {t('about.vision.description')}
               </p>
             </div>
           </div>

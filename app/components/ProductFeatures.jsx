@@ -2,34 +2,37 @@ import wrinkleFreeGif from '../assets/Wrinkle-free.gif';
 import noOdorGif from '../assets/no-odor.gif';
 import flexibilityImg from '../assets/Maximum-flexibility.webp';
 import breathableImg from '../assets/Breathable-and-fast-drying.webp';
+import {useTranslation} from '~/hooks/useTranslation';
 
 export function ProductFeatures() {
+  const {t} = useTranslation();
+
   const features = [
     {
       image: wrinkleFreeGif,
-      title: 'Wrinkle Free',
-      description: 'Maintains a crisp, fresh look without ironing'
+      titleKey: 'product.features.wrinkleFree.title',
+      descriptionKey: 'product.features.wrinkleFree.description'
     },
     {
       image: noOdorGif,
-      title: 'No Odor',
-      description: 'Advanced fabric technology prevents odor buildup'
+      titleKey: 'product.features.noOdor.title',
+      descriptionKey: 'product.features.noOdor.description'
     },
     {
       image: flexibilityImg,
-      title: 'Maximum Flexibility',
-      description: 'Moves with you for unrestricted comfort'
+      titleKey: 'product.features.flexibility.title',
+      descriptionKey: 'product.features.flexibility.description'
     },
     {
       image: breathableImg,
-      title: 'Breathable',
-      description: 'Keeps you cool and dry throughout the day'
+      titleKey: 'product.features.breathable.title',
+      descriptionKey: 'product.features.breathable.description'
     }
   ];
 
   return (
-    <div className="py-16 bg-white flex flex-col  gap-8 items-center">
-      <span className="text-3xl font-bold uppercase mb-4 text-center">Product Qualities</span>
+    <div className="py-16 bg-white flex flex-col gap-8 items-center">
+      <span className="text-3xl font-bold uppercase mb-4 text-center">{t('product.features.title')}</span>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {features.map((feature, index) => (
@@ -37,13 +40,13 @@ export function ProductFeatures() {
               <div className="relative w-24 h-24 mb-6">
                 <img
                   src={feature.image}
-                  alt={feature.title}
+                  alt={t(feature.titleKey)}
                   className="w-full h-full object-cover"
                 />
               </div>
-              <h3 className="text-lg font-medium mb-2">{feature.title}</h3>
+              <h3 className="text-lg font-medium mb-2">{t(feature.titleKey)}</h3>
               <p className="text-sm text-gray-600 leading-relaxed">
-                {feature.description}
+                {t(feature.descriptionKey)}
               </p>
             </div>
           ))}

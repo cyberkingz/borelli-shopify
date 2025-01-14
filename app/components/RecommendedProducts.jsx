@@ -1,8 +1,10 @@
 import {useRef} from 'react';
 import {Link} from '@remix-run/react';
 import {Image, Money} from '@shopify/hydrogen';
+import {useTranslation} from '~/hooks/useTranslation';
 
 export function RecommendedProducts({products}) {
+  const {t} = useTranslation();
   const scrollContainerRef = useRef(null);
 
   const scroll = (direction) => {
@@ -19,15 +21,15 @@ export function RecommendedProducts({products}) {
     });
   };
 
-  if (!products || products.length === 0) return null;
+  if (!products?.length) return null;
 
   return (
     <div className="w-screen relative left-[50%] right-[50%] -mx-[50vw] bg-[#F2F2F2] overflow-x-hidden">
       <div className="py-16">
         <div>
           <div className="text-left pl-6 mb-10">
-            <span className="text-4xl font-bold mb-2">You May Also Like</span>
-            <p className="text-gray-600">Discover more styles that complement your choice</p>
+            <span className="text-4xl font-bold mb-2">{t('product.recommendations.title')}</span>
+            <p className="text-gray-600">{t('product.recommendations.subtitle')}</p>
           </div>
 
           <div className="relative">
@@ -57,7 +59,7 @@ export function RecommendedProducts({products}) {
                     {/* Recommended Badge */}
                     <div className="absolute left-0 top-0 z-10 leading-none">
                       <span className="inline-block bg-[#545252] text-white text-xs px-2 py-1">
-                        RECOMMENDED
+                        {t('product.recommendations.badge')}
                       </span>
                     </div>
                     

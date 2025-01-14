@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {Pagination} from '@shopify/hydrogen';
+import {useTranslation} from '~/hooks/useTranslation';
 
 /**
  * <PaginatedResourceSection > is a component that encapsulate how the previous and next behaviors throughout your application.
@@ -10,6 +11,8 @@ export function PaginatedResourceSection({
   children,
   resourcesClassName,
 }) {
+  const {t} = useTranslation();
+
   return (
     <Pagination connection={connection}>
       {({nodes, isLoading, NextLink}) => {
@@ -31,11 +34,11 @@ export function PaginatedResourceSection({
               <NextLink className="inline-block">
                 {isLoading ? (
                   <span className="inline-flex items-center px-12 py-4 bg-gray-200 text-gray-500 rounded cursor-wait">
-                    Loading...
+                    {t('common.loading')}
                   </span>
                 ) : (
                   <span className="inline-flex items-center px-12 py-4 bg-black text-white rounded hover:bg-gray-800 transition-colors">
-                    Load More
+                    {t('common.loadMore')}
                     <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>

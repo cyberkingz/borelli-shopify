@@ -1,8 +1,11 @@
 import {Image} from '@shopify/hydrogen';
+import {useTranslation} from '~/hooks/useTranslation';
 import desktopBanner from '../../assets/about-us/desktop-banner.jpg';
 import mobileBanner from '../../assets/about-us/mobile-banner.png';
 
 export function HeroSection() {
+  const {t} = useTranslation();
+
   return (
     <div className="relative h-screen min-h-[600px] flex items-center">
       {/* Background image with overlay */}
@@ -21,9 +24,9 @@ export function HeroSection() {
       {/* Content */}
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-2xl">
-          <span className="text-6xl font-bold text-white mb-6">OUR STORY</span>
+          <span className="text-6xl font-bold text-white mb-6">{t('about.hero.title')}</span>
           <p className="text-xl text-white/90">
-            CRAFTING THE PERFECT FIT FOR MEN SINCE 2018
+            {t('about.hero.subtitle')}
           </p>
         </div>
       </div>

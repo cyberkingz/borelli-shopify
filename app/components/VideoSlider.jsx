@@ -1,4 +1,5 @@
 import {useState, useRef, useEffect} from 'react';
+import {useTranslation} from '~/hooks/useTranslation';
 import video1 from '../assets/video/videoslider/barkerlondon-video-1.mp4';
 import video2 from '../assets/video/videoslider/barkerlondon-video-2.mp4';
 import video3 from '../assets/video/videoslider/barkerlondon-video-3.mp4';
@@ -8,6 +9,7 @@ import leftBar from '../assets/video-slider/left-bar.png';
 import rightBar from '../assets/video-slider/right-bar.png';
 
 export function VideoSlider() {
+  const {t} = useTranslation();
   const sliderRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(2);
   const scrollTimeout = useRef(null);
@@ -96,13 +98,13 @@ export function VideoSlider() {
       <div className="flex flex-col items-center mb-16 gap-2 md:gap-4">
         
         <div className="flex flex-row items-center gap-2 md:gap-4">
-          <img src={leftBar} alt="left bar" className="w-[60px] md:w-[100px]" />
-          <span className="text-2xl md:text-4xl text-center uppercase font-bold">The Barker's<br/>community</span>
-          <img src={rightBar} alt="left bar" className="w-[60px] md:w-[100px]" />
+          <img src={leftBar} alt={t('community.leftBar')} className="w-[60px] md:w-[100px]" />
+          <span className="text-2xl md:text-4xl text-center uppercase font-bold">{t('community.title')}</span>
+          <img src={rightBar} alt={t('community.leftBar')} className="w-[60px] md:w-[100px]" />
         </div>
 
         <p className="text-sm md:text-base text-gray-600 text-center px-4 md:px-0">
-          With over 75.000+ global customers, the old money community is bigger than ever before.
+          {t('community.description')}
         </p>
       
       </div>
@@ -171,4 +173,3 @@ export function VideoSlider() {
     </div>
   );
 }
-

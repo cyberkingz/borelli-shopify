@@ -3,6 +3,7 @@ import {useLoaderData, Link} from '@remix-run/react';
 import {getPaginationVariables, Image, Money} from '@shopify/hydrogen';
 import {useVariantUrl} from '~/lib/variants';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
+import {useTranslation} from '~/hooks/useTranslation';
 import collectionCover from '../assets/collection/collection-cover.png';
 
 /**
@@ -58,6 +59,7 @@ function loadDeferredData({context}) {
 export default function Collection() {
   /** @type {LoaderReturnData} */
   const {products} = useLoaderData();
+  const {t} = useTranslation();
 
   return (
     <div className="collection">
@@ -70,9 +72,9 @@ export default function Collection() {
         }}
       >
         <div className="container mx-auto px-4 relative z-10">
-          <h1 className="text-4xl font-bold text-center mb-4 text-white">All Products</h1>
+          <h1 className="text-4xl font-bold text-center mb-4 text-white">{t('collection.allProducts')}</h1>
           <p className="text-center text-white text-opacity-90 max-w-2xl mx-auto">
-            Discover our complete collection of premium quality clothing
+            {t('collection.description')}
           </p>
         </div>
       </div>
@@ -93,12 +95,12 @@ export default function Collection() {
           </PaginatedResourceSection>
         ) : (
           <div className="text-center py-16">
-            <h2 className="text-2xl font-medium mb-6">No products available</h2>
+            <h2 className="text-2xl font-medium mb-6">{t('collection.noProducts')}</h2>
             <Link 
               to="/" 
               className="inline-block bg-black text-white px-8 py-3 rounded hover:bg-gray-800 transition-colors"
             >
-              Back to Home
+              {t('collection.backToHome')}
             </Link>
           </div>
         )}
@@ -135,12 +137,12 @@ function ProductItem({product, loading}) {
           </div>
         )}
       </div>
-      <div className="mt-4">
-        <h4 className="text-lg font-medium group-hover:text-gray-800 transition-colors">{product.title}</h4>
+      <div className="mt-4 flex flex-col gap-1">
+        <h4 className="text-base uppercase tracking-wide font-medium text-gray-900 group-hover:text-black transition-colors">{product.title}</h4>
         <div className="mt-1">
           <Money 
             data={product.priceRange.minVariantPrice} 
-            className="text-lg font-semibold" 
+            className="text-sm font-semibold text-gray-800" 
           />
         </div>
       </div>
