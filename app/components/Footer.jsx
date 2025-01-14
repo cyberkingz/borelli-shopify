@@ -1,6 +1,7 @@
 import {Link} from '@remix-run/react';
 import {useMatches} from '@remix-run/react';
 import {useState, useEffect, Suspense} from 'react';
+import {useTranslation} from '~/hooks/useTranslation';
 import logoWhite from '../assets/barker-logo-white.png';
 
 export function Footer({footer, primaryDomainUrl, publicStoreDomain}) {
@@ -8,6 +9,7 @@ export function Footer({footer, primaryDomainUrl, publicStoreDomain}) {
   const [footerMenu, setFooterMenu] = useState([]);
   const [openMenus, setOpenMenus] = useState({});
   const [isMobile, setIsMobile] = useState(false);
+  const {t} = useTranslation();
 
   useEffect(() => {
     setFooterMenu(footer._data);
@@ -61,13 +63,12 @@ export function Footer({footer, primaryDomainUrl, publicStoreDomain}) {
               className="h-10 invert brightness-0" 
             />
           </Link>
-          <h3 className="text-white font-bold mb-4">About us</h3>
+          <h3 className="text-white font-bold mb-4">{t('footer.aboutUs')}</h3>
           <p className="text-gray-300 text-sm mb-6">
-            Established in 2018, BARKER LONDON is all about standing out from the crowd and staying unique.
+            {t('footer.aboutUsDescription')}
           </p>
           <p className="text-gray-300 text-sm">
-            In just a few years, the Amsterdam-based label is now part of the Dutch capital's
-            burgeoning streetwear scene and a leading global destination for the latest menswear.
+            {t('footer.aboutUsDescription2')}
           </p>
         </div>
 
@@ -77,7 +78,7 @@ export function Footer({footer, primaryDomainUrl, publicStoreDomain}) {
             onClick={() => toggleMenu('Shop')}
             className="w-full flex items-center justify-between mb-4"
           >
-            <h3 className="text-white font-bold">Shop</h3>
+            <h3 className="text-white font-bold">{t('footer.shop')}</h3>
             {isMobile && (
               <svg
                 className={`w-4 h-4 transition-transform ${openMenus['Shop'] ? 'rotate-180' : ''}`}
@@ -135,7 +136,7 @@ export function Footer({footer, primaryDomainUrl, publicStoreDomain}) {
             onClick={() => toggleMenu('Customer Support')}
             className="w-full flex items-center justify-between mb-4"
           >
-            <h3 className="text-white font-bold">Customer Support</h3>
+            <h3 className="text-white font-bold">{t('footer.customerSupport')}</h3>
             {isMobile && (
               <svg
                 className={`w-4 h-4 transition-transform ${openMenus['Customer Support'] ? 'rotate-180' : ''}`}
@@ -189,16 +190,15 @@ export function Footer({footer, primaryDomainUrl, publicStoreDomain}) {
 
         {/* Newsletter */}
         <div>
-          <h3 className="text-white font-bold mb-4">JOIN THE CLUB</h3>
+          <h3 className="text-white font-bold mb-4">{t('footer.newsletter.title')}</h3>
           <p className="text-gray-300 text-sm mb-4">
-            Get exclusive access to new product releases, special offers and restocks. 
-            Join the BARKER LONDON club.
+            {t('footer.newsletter.description')}
           </p>
           <form className="mb-6">
             <div className="relative">
               <input
                 type="email"
-                placeholder="Email"
+                placeholder={t('footer.newsletter.placeholder')}
                 className="w-full bg-transparent border-[1px] border-solid !border-white/30 py-2 pl-4 pr-12 text-white placeholder:text-white/50 focus:outline-none focus:!border-white/50"
               />
               <button
@@ -229,7 +229,7 @@ export function Footer({footer, primaryDomainUrl, publicStoreDomain}) {
       {/* Bottom Bar */}
       <div>
         <div className="max-w-[1800px] mx-auto px-6 py-6 flex justify-between sm:flex-row flex-col items-center gap-4">
-          <span className="text-gray-300">&copy; 2024, BARKER LONDON</span>
+          <span className="text-gray-300">&copy; 2024, {t('footer.copyright.company')}. {t('footer.copyright.rights')}</span>
           <div className="flex items-center space-x-4">
             {Object.values(paymentIcons).map((PaymentIcon, index) => (
               <span key={index} className="flex">

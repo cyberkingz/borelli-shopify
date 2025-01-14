@@ -20,6 +20,7 @@ import {AnnouncementBar} from '~/components/AnnouncementBar';
 import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
 import { FacebookWebPixel } from './components/FacebookWebPixel';
 import BundleStylist from './styles/component-bundle-style.css?url'
+import {getMarketByLocale} from '~/config/markets';
 
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
@@ -62,18 +63,29 @@ export function links() {
 /**
  * @param {LoaderFunctionArgs} args
  */
-export async function loader(args) {
+export async function loader({params, context, request}) {
+  const locale = params.locale;
+  const market = getMarketByLocale(locale);
+  
+  // Set the market configuration in the storefront context
+  context.storefront.i18n = {
+    language: market.language,
+    country: market.countryCode,
+    currency: market.currency,
+  };
+
   // Start fetching non-critical data without blocking time to first byte
-  const deferredData = loadDeferredData(args);
+  const deferredData = loadDeferredData({context});
 
   // Await the critical data required to render initial state of the page
-  const criticalData = await loadCriticalData(args);
+  const criticalData = await loadCriticalData({context});
 
-  const {storefront, env} = args.context;
+  const {storefront, env} = context;
 
   return defer({
     ...deferredData,
     ...criticalData,
+    market,
     publicStoreDomain: env.PUBLIC_STORE_DOMAIN,
     shop: getShopAnalytics({
       storefront,
@@ -83,9 +95,8 @@ export async function loader(args) {
       checkoutDomain: env.PUBLIC_CHECKOUT_DOMAIN,
       storefrontAccessToken: env.PUBLIC_STOREFRONT_API_TOKEN,
       withPrivacyBanner: true,
-      // localize the privacy banner
-      country: args.context.storefront.i18n.country,
-      language: args.context.storefront.i18n.language,
+      country: context.storefront.i18n.country,
+      language: context.storefront.i18n.language,
     },
   });
 }

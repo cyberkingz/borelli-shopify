@@ -36,15 +36,16 @@ export function PageLayout({
       )}
       <main>{children}</main>
       <Suspense>
-            <Await resolve={footer}>
-              <Footer
-                footer={footer}
-                primaryDomainUrl={header.shop.primaryDomain.url}
-                publicStoreDomain={publicStoreDomain}
-              />
-            </Await>
-          </Suspense>
-     
+        <Await resolve={footer}>
+          {(resolvedFooter) => (
+            <Footer
+              footer={resolvedFooter}
+              primaryDomainUrl={header?.shop?.primaryDomain?.url}
+              publicStoreDomain={publicStoreDomain}
+            />
+          )}
+        </Await>
+      </Suspense>
     </Aside.Provider>
   );
 }
@@ -130,13 +131,10 @@ function SearchAside() {
                 />
                 {term.current && total ? (
                   <Link
-                    onClick={closeSearch}
-                    to={`${SEARCH_ENDPOINT}?q=${term.current}`}
+                    to={`/search?q=${term.current}`}
+                    className="text-sm text-gray-500"
                   >
-                    <p>
-                      View all results for <q>{term.current}</q>
-                      &nbsp; →
-                    </p>
+                    {t('common.searchResults')} <q>{term.current}</q>
                   </Link>
                 ) : null}
               </>

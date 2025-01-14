@@ -1,8 +1,9 @@
-import {CartForm, Image} from '@shopify/hydrogen';
+import {CartForm, Image, Money} from '@shopify/hydrogen';
 import {useVariantUrl} from '~/lib/variants';
-import {Link} from '@remix-run/react';
-import {ProductPrice} from './ProductPrice';
+import {Link, useLocation} from '@remix-run/react';
 import {useAside} from './Aside';
+import {getMarketByLocale} from '~/config/markets';
+import {useTranslation} from '~/hooks/useTranslation';
 
 /**
  * A single line item in the cart. It displays the product image, title, price.
@@ -13,10 +14,35 @@ import {useAside} from './Aside';
  * }}
  */
 export function CartLineItem({layout, line}) {
-  const {id, merchandise} = line;
+  const {id, merchandise, cost, attributes} = line;
   const {product, title, image, selectedOptions} = merchandise;
   const lineItemUrl = useVariantUrl(product.handle, selectedOptions);
   const {close} = useAside();
+  const {t} = useTranslation();
+
+  const location = useLocation();
+  const [, locale] = location.pathname.split('/');
+  const market = getMarketByLocale(locale);
+
+  // Check if this is part of a bundle
+  const bundleAttribute = attributes?.find(attr => attr.key === 'bundle');
+  const isBundle = bundleAttribute?.value === 'true';
+
+  // For bundles, use the amountPerQuantity (which includes the bundle discount)
+  // For regular items, use compareAtAmountPerQuantity for original price
+  const regularPrice = isBundle ? null : cost?.compareAtAmountPerQuantity ? {
+    ...cost.compareAtAmountPerQuantity,
+    currencyCode: market.currency,
+  } : null;
+
+  // Use amountPerQuantity for the actual price (includes any discounts)
+  const discountedPrice = cost?.amountPerQuantity ? {
+    ...cost.amountPerQuantity,
+    currencyCode: market.currency,
+  } : cost?.totalAmount ? {
+    ...cost.totalAmount,
+    currencyCode: market.currency,
+  } : null;
 
   return (
     <li key={id} className="flex items-center gap-4 py-4 px-4">
@@ -54,12 +80,25 @@ export function CartLineItem({layout, line}) {
               {option.name}: {option.value}
             </div>
           ))}
+          {isBundle && <div className="text-sm font-medium text-green-600">{t('cart.bundleDiscountApplied')}</div>}
         </div>
-        
+
+        <div className="mt-2">
+          {regularPrice && (
+            <div className="text-gray-500 line-through">
+              <Money data={regularPrice} />
+            </div>
+          )}
+          {discountedPrice && (
+            <div className="font-medium">
+              <Money data={discountedPrice} />
+            </div>
+          )}
+        </div>
+
         <div className="mt-2 flex items-center gap-4">
           <CartLineQuantityAdjust line={line} />
           <div className="ml-auto font-medium">
-            <ProductPrice price={line?.cost?.totalAmount} />
           </div>
         </div>
       </div>

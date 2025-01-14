@@ -6,6 +6,7 @@ import {CategorySection} from '~/components/CategorySection';
 import {BundleSection} from '~/components/BundleSection';
 import {BestsellerSection} from '~/components/BestsellerSection';
 import {VideoSlider} from '~/components/VideoSlider';
+import {useTranslation} from '~/hooks/useTranslation';
 
 /**
  * @type {MetaFunction}
@@ -23,21 +24,21 @@ export async function loader({context}) {
   // Get all collections and their products
   const {collections} = await storefront.query(COLLECTIONS_QUERY);
 
-  const categoryTitles = [
-    'Polos & T-Shirts',
-    'Shoes',
-    'Wool',
-    'Bottoms'
+  const categoryHandles = [
+    'polos-t-shirts',
+    'shoes',
+    'wool',
+    'bottoms'
   ];
 
   const categories = collections.nodes
-    .filter(collection => categoryTitles.includes(collection.title))
+    .filter(collection => categoryHandles.includes(collection.handle))
     .sort((a, b) => {
-      return categoryTitles.indexOf(a.title) - categoryTitles.indexOf(b.title);
+      return categoryHandles.indexOf(a.handle) - categoryHandles.indexOf(b.handle);
     })
     .map(collection => ({
       handle: collection.handle,
-      title: collection.title.toUpperCase(),
+      title: collection.title,
       image: collection.image
     }));
 
@@ -68,18 +69,19 @@ export default function Homepage() {
     bestsellerCollection,
     newArrivalsCollection,
   } = useLoaderData();
+  const {t} = useTranslation();
 
   return (
     <div className="home">
       <Hero />
       {newArrivalsCollection && (
         <ProductSlider
-          title="NEW ARRIVALS"
-          subtitle="Discover our latest additions"
+          title={t('newArrivals.title')}
+          subtitle={t('newArrivals.subtitle')}
           products={newArrivalsCollection.products.nodes}
         />
       )}
-      <CategorySection categories={categories} />
+      {categories?.length > 0 && <CategorySection categories={categories} />}
       {bundleCollection && <BundleSection collection={bundleCollection} />}
       {bestsellerCollection && (
         <BestsellerSection collection={bestsellerCollection} />

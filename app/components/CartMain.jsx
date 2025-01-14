@@ -3,6 +3,7 @@ import {Link} from '@remix-run/react';
 import {useAside} from '~/components/Aside';
 import {CartLineItem} from '~/components/CartLineItem';
 import {CartSummary} from './CartSummary';
+import {useTranslation} from '~/hooks/useTranslation';
 
 /**
  * The main cart component that displays the cart items and summary.
@@ -15,13 +16,14 @@ export function CartMain({layout, cart: originalCart}) {
   const withDiscount = cart && Boolean(cart?.discountCodes?.filter((code) => code.applicable)?.length);
   const className = `cart-main ${withDiscount ? 'with-discount' : ''}`;
   const cartHasItems = cart?.totalQuantity > 0;
+  const {t} = useTranslation();
 
   return (
     <div className={className}>
       <CartEmpty hidden={linesCount} layout={layout} />
       <div className="cart-details">
         {cartHasItems && (
-          <h2 className="text-2xl font-bold mb-6 px-4">Shopping Cart ({cart.totalQuantity})</h2>
+          <h2 className="text-2xl font-bold mb-6 px-4">{t('cart.title')} ({cart.totalQuantity})</h2>
         )}
         <div aria-labelledby="cart-lines" className="divide-y divide-gray-200">
           <ul className="space-y-4">
@@ -44,6 +46,8 @@ export function CartMain({layout, cart: originalCart}) {
  */
 function CartEmpty({hidden = false}) {
   const {close} = useAside();
+  const {t} = useTranslation();
+
   return (
     <div hidden={hidden} className="flex flex-col items-center justify-center py-12 px-4">
       <div className="text-center">
@@ -61,9 +65,9 @@ function CartEmpty({hidden = false}) {
             d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" 
           />
         </svg>
-        <h2 className="text-2xl font-semibold mb-2">Your cart is empty</h2>
+        <h2 className="text-2xl font-semibold mb-2">{t('cart.empty.title')}</h2>
         <p className="text-gray-500 mb-6">
-          Looks like you haven't added anything yet, let's get you started!
+          {t('cart.empty.description')}
         </p>
         <Link 
           to="/" 
@@ -71,7 +75,7 @@ function CartEmpty({hidden = false}) {
           prefetch="viewport"
           className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-none bg-[#2B555A] text-white hover:opacity-90 transition-opacity"
         >
-          Continue Shopping
+          {t('cart.empty.button')}
           <span className="ml-2">→</span>
         </Link>
       </div>

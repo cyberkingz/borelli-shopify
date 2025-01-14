@@ -1,16 +1,29 @@
+import {getAllowedMarkets, isDefaultMarket} from '~/config/markets';
+import {redirectToLocale} from '~/lib/market';
+
 /**
  * @param {LoaderFunctionArgs}
  */
-export async function loader({params, context}) {
+export async function loader({params, context, request}) {
   const {language, country} = context.storefront.i18n;
+  const allowedMarkets = getAllowedMarkets();
+  const currentLocale = params.locale || '';
+  
+  // Handle default market (UK)
+  if (isDefaultMarket(currentLocale)) {
+    return null; // Allow access to root without locale
+  }
 
-  if (
-    params.locale &&
-    params.locale.toLowerCase() !== `${language}-${country}`.toLowerCase()
-  ) {
-    // If the locale URL param is defined, yet we still are still at the default locale
-    // then the the locale param must be invalid, send to the 404 page
-    throw new Response(null, {status: 404});
+  // For non-default markets, validate the locale
+  if (!allowedMarkets.includes(currentLocale)) {
+    // If invalid locale, redirect to default market (UK)
+    return redirectToLocale(request, '');
+  }
+
+  // If the locale doesn't match the storefront settings, redirect
+  const expectedLocale = `${language}-${country}`.toLowerCase();
+  if (currentLocale !== expectedLocale && !isDefaultMarket(expectedLocale)) {
+    return redirectToLocale(request, expectedLocale);
   }
 
   return null;

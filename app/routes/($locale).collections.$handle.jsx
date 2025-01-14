@@ -8,6 +8,7 @@ import {
 } from '@shopify/hydrogen';
 import {useVariantUrl} from '~/lib/variants';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
+import {useTranslation} from '~/hooks/useTranslation';
 import collectionCover from '../assets/collection/collection-cover.png';
 
 /**
@@ -77,6 +78,13 @@ function loadDeferredData({context}) {
 export default function Collection() {
   /** @type {LoaderReturnData} */
   const {collection} = useLoaderData();
+  const {t} = useTranslation();
+  const handle = collection.handle;
+
+  // Get category translations based on handle
+  const categoryKey = handle.replace('-t-shirts', '').replace('-', '');
+  const title = t(`collection.categories.${categoryKey}.title`);
+  const description = t(`collection.categories.${categoryKey}.description`);
 
   return (
     <div className="collection">
@@ -89,10 +97,10 @@ export default function Collection() {
         }}
       >
         <div className="container mx-auto px-4 relative z-10">
-          <h1 className="text-4xl font-bold text-center mb-4 text-white">{collection.title}</h1>
-          {collection.description && (
+          <h1 className="text-4xl font-bold text-center mb-4 text-white">{title}</h1>
+          {description && (
             <p className="text-center text-white text-opacity-90 max-w-2xl mx-auto">
-              {collection.description}
+              {description}
             </p>
           )}
         </div>

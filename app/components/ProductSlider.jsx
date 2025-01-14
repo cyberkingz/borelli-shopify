@@ -1,9 +1,11 @@
 import {Link} from '@remix-run/react';
-import {Image} from '@shopify/hydrogen';
+import {Image, Money} from '@shopify/hydrogen';
 import {useRef} from 'react';
+import {useTranslation} from '~/hooks/useTranslation';
 
 export function ProductSlider({title, subtitle, products = []}) {
   const scrollContainerRef = useRef(null);
+  const {t} = useTranslation();
 
   const scroll = (direction) => {
     const container = scrollContainerRef.current;
@@ -68,9 +70,9 @@ export function ProductSlider({title, subtitle, products = []}) {
                 to={`/products/${product.handle}`}
               >
                 <div className="relative aspect-[2/3] overflow-hidden bg-gray-100">
-                  <div className="absolute left-0 top-0 z-10">
-                    <span className="inline-block bg-black text-[10px] px-2 py-1 text-white uppercase tracking-wider">
-                      NEW STYLE
+                  <div className="absolute left-0 top-0 z-10 leading-none">
+                    <span className="inline-block bg-black text-white text-xs px-2 py-1">
+                      {t('product.newStyle')}
                     </span>
                   </div>
                   <Image
@@ -110,12 +112,12 @@ export function ProductSlider({title, subtitle, products = []}) {
         </button>
       </div>
 
-      <div className="mt-12 text-center">
-        <Link 
-          to="/collections"
-          className="inline-block bg-black text-white px-8 py-3 uppercase hover:bg-gray-800 transition-colors"
+      <div className="flex justify-center mt-8">
+        <Link
+          to={`/collections/new-arrivals`}
+          className="inline-block bg-black text-white px-8 py-3 uppercase transition-colors"
         >
-          View all
+          {t('common.viewAll')}
         </Link>
       </div>
     </section>
