@@ -2,7 +2,7 @@ export const countries = {
     default: {
       country: 'GB',
       language: 'EN',
-      label: 'United Kingdom (EUR €)',
+      label: 'United Kingdom (GBP £)',
       host: 'barkerlondon.com'
     },
     'de-de': {
