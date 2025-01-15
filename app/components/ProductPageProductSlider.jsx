@@ -1,10 +1,11 @@
 import {Link} from '@remix-run/react';
 import {Image} from '@shopify/hydrogen';
 import {useRef} from 'react';
+import { useLocale } from './UseLocale';
 
 export function ProductPageProductSlider({products = []}) {
   const scrollContainerRef = useRef(null);
-
+  const getPrefix = useLocale();
   const scroll = (direction) => {
     const container = scrollContainerRef.current;
     if (!container) return;
@@ -63,7 +64,7 @@ export function ProductPageProductSlider({products = []}) {
               <Link
                 key={product.id}
                 className="group relative flex-none w-[calc((100vw-32px)/2)] md:w-[calc((100vw-48px)/4)] snap-start"
-                to={`/products/${product.handle}`}
+                to={`${getPrefix?.pathPrefix ? getPrefix?.pathPrefix : ''}/products/${product.handle}`}
               >
                 <div className="relative aspect-[2/3] overflow-hidden bg-gray-100">
                   <div className="absolute left-0 top-0 z-10">

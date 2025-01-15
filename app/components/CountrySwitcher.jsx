@@ -26,9 +26,9 @@ export function CountrySwitcher() {
 
   const strippedPathname = pathname ? pathname.replace(selectedLocale?.pathPrefix || '', '') : ''; // Use optional chaining
   return (
-    <details className="relative">
-      <summary>{selectedLocale?.label || 'Select Locale'}</summary> {/* Fallback for undefined selectedLocale */}
-      <div className="absolute top-0 bg-white overflow-auto border-t py-2 px-2 bg-contrast w-full max-h-36">
+    <details className="w-full relative">
+      <summary className="text-right">{selectedLocale?.label || 'Select Locale'}</summary> {/* Fallback for undefined selectedLocale */}
+      <div className="absolute top-0 bg-white overflow-auto border-t py-2 px-2 bg-contrast w-full max-h-36 text-right">
         {isLoading ? (
           <p>Loading countries...</p> // Loading state
         ) : Object.keys(countries).length > 0 ? (
