@@ -1,6 +1,6 @@
 export const countries = {
     default: {
-      country: 'UK',
+      country: 'GB',
       language: 'EN',
       label: 'United Kingdom (EUR €)',
       host: 'barkerlondon.com'

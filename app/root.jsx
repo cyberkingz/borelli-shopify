@@ -71,7 +71,7 @@ export async function loader(args) {
   const criticalData = await loadCriticalData(args);
 
   const {storefront, env} = args.context;
-
+  const selectedLocale = await getLocaleFromRequest(args.request);
   return defer({
     ...deferredData,
     ...criticalData,
@@ -88,6 +88,7 @@ export async function loader(args) {
       country: args.context.storefront.i18n.country,
       language: args.context.storefront.i18n.language,
     },
+    selectedLocale
   });
 }
 
@@ -96,7 +97,7 @@ export async function loader(args) {
  * needed to render the page. If it's unavailable, the whole page should 400 or 500 error.
  * @param {LoaderFunctionArgs}
  */
-async function loadCriticalData({context, request}) {
+async function loadCriticalData({context}) {
   const {storefront} = context;
 
   const [header] = await Promise.all([
@@ -110,8 +111,7 @@ async function loadCriticalData({context, request}) {
   ]);
 
   return {
-    header,
-    selectedLocale: await getLocaleFromRequest(request)
+    header
   };
 }
 
@@ -152,8 +152,8 @@ export function Layout({children}) {
   const nonce = useNonce();
   /** @type {RootLoader} */
   const data = useRouteLoaderData('root');
-
   const locale = data?.selectedLocale;
+  console.log(locale);
   return (
     <html lang={locale?.language}>
       <head>

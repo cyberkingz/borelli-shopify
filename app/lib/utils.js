@@ -1,20 +1,34 @@
-import {countries} from '~/data/countries';
+import { countries } from '~/data/countries';
 
 export function getLocaleFromRequest(request) {
+
   const url = new URL(request.url);
-  console.log(url);
+  console.log('URL this:', url.pathname);
+
   switch (url.host) {
-    case 'ca.hydrogen.shop':
-      if (/^\/fr($|\/)/.test(url.pathname)) {
-        return countries['fr-ca'];
+    case 'localhost:3000': {
+      // Handle localhost environment
+      if (/^\/fr-fr($|\/)/.test(url.pathname)) {
+        return countries['fr-fr'];
+      } else if(/^\/de-de($|\/)/.test(url.pathname)) {
+        return countries['de-de'];
       } else {
-        return countries['en-ca'];
+        return countries['default'] || null; // Ensure a default locale exists
       }
-      break;
-    case 'hydrogen.au':
-      return countries['en-au'];
-      break;
-    default:
-      return countries['default'];
+    }
+    case 'barkerlondon.com': {
+      // Handle production environment
+      if (/^\/fr-fr($|\/)/.test(url.pathname)) {
+        return countries['fr-fr'];
+      } else if(/^\/de-de($|\/)/.test(url.pathname)) {
+        return countries['de-de'];
+      } else {
+        return countries['default'] || null; // Ensure a default locale exists
+      }     
+    }
+    default: {
+      // Fallback for unrecognized hosts
+      return countries['default'] || null; // Ensure a default locale exists
+    }
   }
 }
