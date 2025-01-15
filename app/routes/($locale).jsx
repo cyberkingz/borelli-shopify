@@ -56,10 +56,13 @@ export const action = async ({request, context}) => {
     });
   }
 
+  /// Check if the environment is local
+  const isLocal = request.url.includes('localhost');
+
   // Construct the redirect URL
   const redirectUrl = new URL(
     `${toLocale.pathPrefix || ''}${path}`,
-    `https://${toLocale.host}`
+    isLocal ? `http://localhost:3000` : `https://${toLocale.host}` // Use `localhost` for local development
   );
 
   return redirect(redirectUrl, 302);

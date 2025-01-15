@@ -153,7 +153,7 @@ export function Layout({children}) {
   /** @type {RootLoader} */
   const data = useRouteLoaderData('root');
   const locale = data?.selectedLocale;
-  console.log(locale);
+
   return (
     <html lang={locale?.language}>
       <head>

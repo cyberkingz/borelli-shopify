@@ -25,7 +25,6 @@ export function CountrySwitcher() {
   }, [fetcher.data, isLoading]); // Dependency on fetcher.data and isLoading
 
   const strippedPathname = pathname ? pathname.replace(selectedLocale?.pathPrefix || '', '') : ''; // Use optional chaining
-  console.log(selectedLocale);
   return (
     <details className="relative">
       <summary>{selectedLocale?.label || 'Select Locale'}</summary> {/* Fallback for undefined selectedLocale */}

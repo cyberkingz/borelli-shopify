@@ -3,7 +3,6 @@ import { countries } from '~/data/countries';
 export function getLocaleFromRequest(request) {
 
   const url = new URL(request.url);
-  console.log('URL this:', url.pathname);
 
   switch (url.host) {
     case 'localhost:3000': {
