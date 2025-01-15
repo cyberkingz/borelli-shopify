@@ -20,6 +20,7 @@ import {AnnouncementBar} from '~/components/AnnouncementBar';
 import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
 import { FacebookWebPixel } from './components/FacebookWebPixel';
 import BundleStylist from './styles/component-bundle-style.css?url'
+import { getLocaleFromRequest } from './lib/utils';
 
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
@@ -95,7 +96,7 @@ export async function loader(args) {
  * needed to render the page. If it's unavailable, the whole page should 400 or 500 error.
  * @param {LoaderFunctionArgs}
  */
-async function loadCriticalData({context}) {
+async function loadCriticalData({context, request}) {
   const {storefront} = context;
 
   const [header] = await Promise.all([
@@ -108,7 +109,10 @@ async function loadCriticalData({context}) {
     // Add other queries here, so that they are loaded in parallel
   ]);
 
-  return {header};
+  return {
+    header,
+    selectedLocale: await getLocaleFromRequest(request)
+  };
 }
 
 /**
@@ -149,14 +153,12 @@ export function Layout({children}) {
   /** @type {RootLoader} */
   const data = useRouteLoaderData('root');
 
+  const locale = data?.selectedLocale;
   return (
-    <html lang="en">
+    <html lang={locale?.language}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
-
-        
-
         <Meta />
         <Links />
       </head>
@@ -175,7 +177,7 @@ export function Layout({children}) {
               shop={data.shop}
               consent={data.consent}
             >
-              <PageLayout {...data}>{children}</PageLayout>
+              <PageLayout {...data} key={`${locale?.language}-${locale?.country}`}>{children}</PageLayout>
               {/* <FacebookWebPixel /> */}
             </Analytics.Provider>
           ) : (
