@@ -1,7 +1,9 @@
 import {Link} from '@remix-run/react';
 import {Image} from '@shopify/hydrogen';
+import { useLocale } from './UseLocale';
 
 export function BundleSection({collection}) {
+  const getPrefix = useLocale();
   return (
     <section className="w-full py-16 px-4 ">
       <div className="max-w-[1800px] mx-auto bg-[#906e5c36]">
@@ -31,7 +33,7 @@ export function BundleSection({collection}) {
               savings. Perfect for gifting or elevating your own wardrobe.
             </p>
             <Link 
-              to={`/collections/${collection.handle}`}
+              to={`${getPrefix?.pathPrefix ? getPrefix?.pathPrefix : ''}/collections/${collection.handle}`}
               className="inline-block bg-black text-white px-8 py-4 uppercase text-sm tracking-wider font-medium hover:bg-gray-800 transition-colors w-fit"
             >
               SAVE NOW

@@ -1,7 +1,9 @@
 import {Link} from '@remix-run/react';
 import {Image} from '@shopify/hydrogen';
+import { useLocale } from './UseLocale';
 
 export function BestsellerSection({collection}) {
+    const getPrefix = useLocale();
   return (
     <section className="relative w-screen -ml-[50vw] left-1/2 h-[650px] md:h-[600px] my-16 mt-8">
       {/* Background Image with Overlay */}
@@ -39,7 +41,7 @@ export function BestsellerSection({collection}) {
             {/* Button with Enhanced Styling */}
             <div className="pt-4">
               <Link 
-                to="/collections/best-selling"
+                to={`${getPrefix?.pathPrefix ? getPrefix?.pathPrefix : ''}/collections/best-selling`}
                 className="group relative inline-block bg-black/95 text-white px-10 py-4 uppercase text-sm tracking-widest font-medium hover:bg-black transition-all duration-300 w-fit hover:shadow-xl"
               >
                 <span className="relative z-10">Shop bestsellers</span>

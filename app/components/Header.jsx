@@ -11,6 +11,7 @@ import {
   XMarkIcon,
 } from '@heroicons/react/24/outline';
 import {useState, useEffect} from 'react';
+import { CountrySwitcher } from './CountrySwitcher';
 
 /**
  * @param {HeaderProps}
@@ -72,16 +73,8 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
             publicStoreDomain={publicStoreDomain}
           />
         </div>
-        <div className="w-40 flex justify-end items-center gap-4">
-          {/* <NavLink 
-            prefetch="intent" 
-            to="/account" 
-            className="text-gray-700 hover:text-gray-900"
-            style={activeLinkStyle}
-          >
-            <UserIcon className="h-6 w-6" />
-          </NavLink> */}
-         
+        <div className="w-[250px] flex justify-end items-center">
+          <CountrySwitcher />    
           <CartToggle cart={cart} />
         </div>
       </div>
@@ -274,32 +267,34 @@ function CartToggle({cart}) {
   const {open} = useAside();
 
   return (
-    <div className="relative">
-      <button
-        onClick={() => {
-          open('cart');
-        }}
-        className="relative flex items-center justify-center w-8 h-8"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-          className="w-5 h-5"
+    <div className="flex">
+      <div className="relative">
+        <button
+          onClick={() => {
+            open('cart');
+          }}
+          className="relative flex items-center justify-center w-8 h-8"
         >
-          <title>Bag</title>
-          <path
-            fillRule="evenodd"
-            d="M8.125 5a1.875 1.875 0 0 1 3.75 0v.375h-3.75V5Zm-1.25.375V5a3.125 3.125 0 1 1 6.25 0v.375h3.5c.69 0 1.25.56 1.25 1.25v11.25c0 .69-.56 1.25-1.25 1.25H3.375c-.69 0-1.25-.56-1.25-1.25V6.625c0-.69.56-1.25 1.25-1.25h3.5ZM3.375 19.125h13.25a.625.625 0 0 0 .625-.625V6.625a.625.625 0 0 0-.625-.625H3.375a.625.625 0 0 0-.625.625v11.875c0 .345.28.625.625.625Z"
-            clipRule="evenodd"
-          />
-        </svg>
-        <Suspense fallback={<CartBadge count={null} />}>
-          <Await resolve={cart}>
-            <CartBanner />
-          </Await>
-        </Suspense>
-      </button>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            className="w-5 h-5"
+          >
+            <title>Bag</title>
+            <path
+              fillRule="evenodd"
+              d="M8.125 5a1.875 1.875 0 0 1 3.75 0v.375h-3.75V5Zm-1.25.375V5a3.125 3.125 0 1 1 6.25 0v.375h3.5c.69 0 1.25.56 1.25 1.25v11.25c0 .69-.56 1.25-1.25 1.25H3.375c-.69 0-1.25-.56-1.25-1.25V6.625c0-.69.56-1.25 1.25-1.25h3.5ZM3.375 19.125h13.25a.625.625 0 0 0 .625-.625V6.625a.625.625 0 0 0-.625-.625H3.375a.625.625 0 0 0-.625.625v11.875c0 .345.28.625.625.625Z"
+              clipRule="evenodd"
+            />
+          </svg>
+          <Suspense fallback={<CartBadge count={null} />}>
+            <Await resolve={cart}>
+              <CartBanner />
+            </Await>
+          </Suspense>
+        </button>
+      </div>
     </div>
   );
 }
