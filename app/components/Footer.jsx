@@ -6,13 +6,11 @@ import logoWhite from '../assets/barker-logo-white.png';
 
 export function Footer({footer, primaryDomainUrl, publicStoreDomain}) {
   const matches = useMatches();
-  const [footerMenu, setFooterMenu] = useState([]);
   const [openMenus, setOpenMenus] = useState({});
   const [isMobile, setIsMobile] = useState(false);
   const {t} = useTranslation();
 
   useEffect(() => {
-    setFooterMenu(footer._data);
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768); // 768px is the md breakpoint
     };
@@ -21,6 +19,7 @@ export function Footer({footer, primaryDomainUrl, publicStoreDomain}) {
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
   const toggleMenu = (menuName) => {
     if (isMobile) {
       setOpenMenus(prev => ({
@@ -96,7 +95,7 @@ export function Footer({footer, primaryDomainUrl, publicStoreDomain}) {
             )}
           </button>
           <ul className={`space-y-2 overflow-hidden transition-all duration-300 ease-in-out ${isMobile ? (openMenus['Shop'] ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0') : 'max-h-96 opacity-100'}`}>
-            {footerMenu?.shop?.items.map(item => {
+            {footer?.shop?.items?.map(item => {
               if (!item.url) return null;
               // If the url is internal, we strip the domain
               const url =
@@ -106,27 +105,18 @@ export function Footer({footer, primaryDomainUrl, publicStoreDomain}) {
                   ? new URL(item.url).pathname
                   : item.url;
               const isExternal = !url.startsWith('/');
-              return isExternal ? (
+              return (
                 <li key={item.id}>
                   <Link 
                     to={url} 
                     className="text-gray-300 hover:text-white transition-colors block !no-underline !text-gray-300 hover:!text-white"
-                  >
-                    {item.title}
-                  </Link>
-                </li>
-               ) : (
-                <li key={item.id}>
-                  <Link 
-                    to={url} 
-                    className="text-gray-300 hover:text-white transition-colors block !no-underline !text-gray-300 hover:!text-white"
+                    {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                   >
                     {item.title}
                   </Link>
                 </li>
               );
-            }
-          )}
+            })}
           </ul>
         </div>
 
@@ -154,7 +144,7 @@ export function Footer({footer, primaryDomainUrl, publicStoreDomain}) {
             )}
           </button>
           <ul className={`space-y-2 overflow-hidden transition-all duration-300 ease-in-out ${isMobile ? (openMenus['Customer Support'] ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0') : 'max-h-96 opacity-100'}`}>
-            {footerMenu?.customer_support?.items.map(item => {
+            {footer?.customer_support?.items.map(item => {
               if (!item.url) return null;
               // If the url is internal, we strip the domain
               const url =
