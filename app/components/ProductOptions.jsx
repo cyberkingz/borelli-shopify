@@ -26,7 +26,6 @@ export function ProductOptions({
   const [isOpen, setIsOpen] = useState(false);
   const [isSizeFinderOpen, setIsSizeFinderOpen] = useState(false);
   const dropdownRef = useRef(null);
-  const {t} = useTranslation();
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -45,12 +44,9 @@ export function ProductOptions({
     }
   }, []);
 
-  if (!option || !option.optionValues || option.optionValues.length === 1) return null;
+  if (option.optionValues.length === 1) return null;
 
-  // Normalize option names to handle both English and translated versions
-  const normalizedOptionName = option.name.toLowerCase();
-  const isColor = normalizedOptionName === 'color' || normalizedOptionName === 'farbe';
-  const isSize = normalizedOptionName === 'size' || normalizedOptionName === 'größe' || normalizedOptionName === 'shoe size' || normalizedOptionName === 'schuhgröße';
+  const isSize = option.name.toLowerCase() === 'size' || option.name.toLowerCase() === 'shoe size' || option.name.toLowerCase() === 'größe' || option.name.toLowerCase() === 'taille';
   const showDropdown = isSize && option.optionValues.length > 4;
 
   const handleOptionChange = (optionName, optionValue) => {
@@ -60,27 +56,27 @@ export function ProductOptions({
       }
       return item;
     });      
-   
+
     setSingleSelectedOptions(NewValues);
 
     const normalizedNewValues = JSON.stringify(NewValues).replace(/\s+/g, '').toLowerCase();
-    product.variants.nodes.forEach(node => {
-      const normalizedSelectedOptions = JSON.stringify(node?.selectedOptions).replace(/\s+/g, '').toLowerCase();
-      if(normalizedSelectedOptions === normalizedNewValues) {
-        setSingleSelectedVariant(node);
-      }
-    });   
+      product.variants.nodes.map(node => {
+        const normalizedSelectedOptions = JSON.stringify(node?.selectedOptions).replace(/\s+/g, '').toLowerCase();
+        if(normalizedSelectedOptions === normalizedNewValues) {
+          setSingleSelectedVariant(node);
+        }
+      })   
    
     const newSearchParams = new URLSearchParams(searchParams);
     
     // If it's a color option, we want to update it regardless of size
-    if (isColor) {
+    if (optionName.toLowerCase() === 'color') {
       newSearchParams.set(optionName, optionValue);
     } else {
       // For non-color options (like size), ensure we have a color selected
-      const currentColor = searchParams.get('Color') || searchParams.get('Farbe');
+      const currentColor = searchParams.get('Color');
       if (currentColor) {
-        newSearchParams.set(isColor ? 'Color' : 'Farbe', currentColor);
+        newSearchParams.set('Color', currentColor);
       }
       newSearchParams.set(optionName, optionValue);
     }
@@ -89,13 +85,11 @@ export function ProductOptions({
   return (
     <div className="grid gap-0">
       <div className="flex flex-col gap-2">
-        {isColor ? (
+        {option.name.toLowerCase() === 'color' || option.name.toLowerCase() === 'farbe' || option.name.toLowerCase() === 'couleur' ? (
           <div className="flex items-center">
             <span className="font-semibold uppercase min-w-[60px]">{option.name}:</span>
             <span className="text-sm text-gray-600 leading-none ml-2">
-              {singleSelectedVariant?.selectedOptions.find(opt => 
-                opt.name.toLowerCase() === normalizedOptionName
-              )?.value}
+              {singleSelectedVariant?.selectedOptions[0]?.value}
             </span>
           </div>
         ) : showDropdown ? (
@@ -103,155 +97,204 @@ export function ProductOptions({
             <div className="flex items-center">
               <span className="font-semibold uppercase min-w-[60px]">{option.name}:</span>
               <span className="text-sm text-gray-600 leading-none">
-                {singleSelectedVariant?.selectedOptions.find(opt => 
-                  opt.name.toLowerCase() === normalizedOptionName
-                )?.value}
+                {singleSelectedVariant?.selectedOptions[1]?.value}
               </span>
             </div>
-            {isSize && (
-              <button
-                onClick={() => setIsSizeFinderOpen(true)}
-                className="text-sm text-gray-500 flex items-center"
-              >
-                <img src={sizeFinderIcon} alt={t('product.size.guide')} className="w-4 h-4 mr-1" />
-                {t('product.size.guide')}
-              </button>
+            {option.name.toLowerCase() === 'size' || option.name.toLowerCase() === 'größe' || option.name.toLowerCase() === 'taille' && (
+              <div className="flex items-center gap-2 text-sm">
+                 <img src={sizeFinderIcon} alt={t('product.size.guide')} className="w-4 h-4 mr-1" />
+                <button 
+                  className="underline"
+                  onClick={() => setIsSizeFinderOpen(true)}
+                >
+                   {t('product.size.guide')}
+                </button>
+              </div>
             )}
           </div>
-        ) : null}
+        ) : (
+          <div className="flex items-center">
+            <span className="font-semibold uppercase min-w-[60px]">{option.name}:</span>
+            <span className="text-sm text-gray-600 leading-none">
+              {searchParams.get(option.name) || ''}
+            </span>
+          </div>
+        )}
+        <div className="flex flex-wrap items-center gap-2">
+          {option.optionValues.map((opt, index) => {
+            const isSelected = searchParams.get(option.name) === opt.name;
+            const isColor = option.name.toLowerCase() === 'color' || option.name.toLowerCase() === 'farbe' || option.name.toLowerCase() === 'couleur';
 
-        {/* Color swatches */}
-        {isColor && (
-          <div className="flex flex-wrap gap-2">
-            {option.optionValues.map((opt) => (
-              <ColorSwatch
-                key={option.name + opt.name}
-                name={option.name}
-                handle={opt.name}
-                selected={singleSelectedVariant?.selectedOptions.find(so => 
-                  so.name.toLowerCase() === normalizedOptionName
-                )?.value === opt.name}
-                available={!!opt.firstSelectableVariant}
+            if (isColor) {
+              const colorMetafield = product?.metafields?.find(
+                metafield => metafield?.key === opt.name.toLowerCase().replace(/\s+/g, '-')
+              );
+              
+              return (
+                <ColorSwatch
+                  key={index}
+                  name={opt.name}
+                  handle={opt.handle}
+                  selected={isSelected}
+                  available={opt.available}
+                  onClick={() => handleOptionChange(option.name, opt.name)}
+                  customColor={colorMetafield?.value}
+                  singleSelectedVariant={singleSelectedVariant}
+                />
+              );
+            }
+
+            if (showDropdown) return null;
+
+            return (
+              <SizeOption
+                key={index}
+                name={opt.name}
+                handle={opt.handle}
+                selected={isSelected}
+                available={opt.available}
                 onClick={() => handleOptionChange(option.name, opt.name)}
-                customColor={opt.swatch?.color || opt.name}
                 singleSelectedVariant={singleSelectedVariant}
               />
-            ))}
-          </div>
-        )}
+            );
+          })}
+        </div>
+      </div>
+      {showDropdown && (
+        <div className="w-full sm:max-w-[300px]">
+          <div className="relative" ref={dropdownRef}>
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className={`
+                w-full h-[48px] px-4 
+                border-2 rounded-lg bg-white
+                text-base font-medium 
+                transition-all duration-200
+                focus:outline-none focus:border-black
+                disabled:opacity-50 disabled:cursor-not-allowed
+                flex items-center justify-between
+                ${searchParams.get(option.name) ? 'text-black border-gray-200' : 'text-gray-500 border-gray-200'}
+                ${isOpen ? 'border-black' : ''}
+              `}
+            >
+              <span>{singleSelectedVariant?.selectedOptions[1]?.value}</span>
+              <svg 
+                className={`w-4 h-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
 
-        {/* Size options */}
-        {isSize && (
-          <>
-            {showDropdown ? (
-              <div className="relative" ref={dropdownRef}>
-                <button
-                  onClick={() => setIsOpen(!isOpen)}
-                  className="w-full sm:max-w-[300px] px-4 py-2 text-left border rounded-lg focus:outline-none"
-                >
-                  {singleSelectedVariant?.selectedOptions.find(opt => 
-                    opt.name.toLowerCase() === normalizedOptionName
-                  )?.value || t('product.size.select')}
-                </button>
-                {isOpen && (
-                  <div className="absolute z-10 w-full sm:max-w-[300px] mt-1 bg-white border rounded-lg shadow-lg">
-                    {option.optionValues.map((opt) => (
-                      <button
-                        key={option.name + opt.name}
-                        onClick={() => {
+            {isOpen && (
+              <div className="absolute z-50 w-full mt-2 bg-white border-2 border-black rounded-lg shadow-lg overflow-hidden">
+                <div className="max-h-[300px] overflow-y-auto">
+                  {option.optionValues.map((opt, index) => (
+                    <button
+                      key={index}
+                      className={`
+                        w-full px-4 py-3 text-left text-base
+                        transition-colors duration-200
+                        flex items-center justify-between
+                        ${searchParams.get(option.name) === opt.name ? 'bg-gray-100 font-semibold' : 'hover:bg-gray-50'}
+                        ${!opt.available ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
+                        ${searchParams.get(option.name) === opt.name ? 'text-black' : 'text-gray-700'}
+                      `}
+                      disabled={!opt.available}
+                      onClick={() => {
+                        if (opt.available) {
                           handleOptionChange(option.name, opt.name);
                           setIsOpen(false);
-                        }}
-                        className={`w-full px-4 py-2 text-left hover:bg-gray-100 ${
-                          !opt.firstSelectableVariant ? 'text-gray-400 cursor-not-allowed' : ''
-                        } ${singleSelectedVariant?.selectedOptions.find(so => 
-                          so.name.toLowerCase() === normalizedOptionName
-                        )?.value === opt.name ? 'bg-gray-100' : ''}`}
-                        disabled={!opt.firstSelectableVariant}
-                      >
-                        {opt.name}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div className="flex flex-wrap gap-2">
-                {option.optionValues.map((opt) => (
-                  <SizeOption
-                    key={option.name + opt.name}
-                    name={option.name}
-                    handle={opt.name}
-                    selected={singleSelectedVariant?.selectedOptions.find(so => 
-                      so.name.toLowerCase() === normalizedOptionName
-                    )?.value === opt.name}
-                    available={!!opt.firstSelectableVariant}
-                    onClick={() => handleOptionChange(option.name, opt.name)}
-                    singleSelectedVariant={singleSelectedVariant}
-                  />
-                ))}
+                        }
+                      }}
+                    >
+                      <span>{opt.name}</span>
+                      {searchParams.get(option.name) === opt.name && (
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                      )}
+                      {!opt.available && (
+                        <span className="text-sm text-gray-400 italic">Out of Stock</span>
+                      )}
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
-          </>
-        )}
-      </div>
-
-      {isSizeFinderOpen && (
-        <SizeFinder
-          isOpen={isSizeFinderOpen}
-          onClose={() => setIsSizeFinderOpen(false)}
-          productTitle={productTitle}
-        />
+          </div>
+        </div>
       )}
+      <SizeFinder 
+        isOpen={isSizeFinderOpen}
+        onClose={() => setIsSizeFinderOpen(false)}
+        productTitle={productTitle}
+      />
     </div>
   );
 }
 
-// Color swatch component
+/**
+ * Color swatch component
+ */
 function ColorSwatch({name, handle, selected, available, onClick, customColor, singleSelectedVariant}) {
+  // Map color names to actual CSS color values
   const colorMap = {
-    'black': '#000000',
     'white': '#FFFFFF',
-    'red': '#FF0000',
-    'blue': '#0000FF',
-    'schwarz': '#000000',
-    'weiß': '#FFFFFF',
-    'rot': '#FF0000',
-    'blau': '#0000FF',
-    // Add more color mappings as needed
+    'brown': '#8B4513',
+    'fog blue': '#CDE3F7',
+    'marine blue': '#003366',
+    'dark gray': '#505050'
+    // Add more colors as needed
   };
-
-  const backgroundColor = colorMap[handle.toLowerCase()] || customColor;
-
+  
+  const colorValue = customColor || colorMap[name.toLowerCase()] || name.toLowerCase();
   return (
     <button
+      title={name}
       onClick={onClick}
-      disabled={!available}
-      className={`w-8 h-8 rounded-full border-2 ${
-        selected ? 'border-black' : 'border-gray-200'
-      } ${!available ? 'opacity-50 cursor-not-allowed' : ''}`}
+      className={`
+        relative w-8 h-8 rounded-full overflow-hidden
+        transition-all duration-200
+        ring-1 ring-gray-400
+        ${singleSelectedVariant?.selectedOptions[0]?.value === name ? 'ring-2 ring-offset-2 ring-black' : ''}
+        ${!available ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:scale-110'}
+      `}
       style={{
-        backgroundColor,
-        boxShadow: selected ? '0 0 0 2px white, 0 0 0 4px black' : 'none',
+        backgroundColor: colorValue,
       }}
-      title={handle}
-    />
-  );
-}
-
-// Size option component
-function SizeOption({name, handle, selected, available, onClick, singleSelectedVariant}) {
-  return (
-    <button
-      onClick={onClick}
       disabled={!available}
-      className={`min-w-[48px] h-12 px-3 text-sm border rounded-lg ${
-        selected
-          ? 'border-black bg-black text-white'
-          : 'border-gray-200 hover:border-gray-400'
-      } ${!available ? 'opacity-50 cursor-not-allowed' : ''}`}
     >
-      {handle}
+      <span className="sr-only">{name}</span>
     </button>
   );
 }
+
+/**
+ * Size option component
+ */
+function SizeOption({name, handle, selected, available, onClick, singleSelectedVariant}) {
+  
+  return (
+    <button
+      onClick={onClick}
+      className={`
+        px-4 py-2 text-sm font-medium
+        border rounded-lg
+        transition-all duration-200
+        ${selected ? 'bg-black text-white border-black' : 'border-gray-300'}
+        ${!available ? 'opacity-50 cursor-not-allowed' : 'hover:border-black'}
+      `}
+      disabled={!available}
+    >
+      {name}
+      {!available && (
+        <span className="text-sm text-gray-400 italic ml-1">(Out of Stock)</span>
+      )}
+    </button>
+  );
+}
+
+/** @typedef {import('@shopify/hydrogen').MappedProductOptions} MappedProductOptions */

@@ -2,11 +2,12 @@ import {useRef} from 'react';
 import {Link} from '@remix-run/react';
 import {Image, Money} from '@shopify/hydrogen';
 import {useTranslation} from '~/hooks/useTranslation';
+import { useLocale } from './UseLocale';
 
 export function RecommendedProducts({products}) {
   const {t} = useTranslation();
   const scrollContainerRef = useRef(null);
-
+  const getPrefix = useLocale();
   const scroll = (direction) => {
     const container = scrollContainerRef.current;
     if (!container) return;
@@ -52,7 +53,7 @@ export function RecommendedProducts({products}) {
               {products.map((product) => (
                 <Link 
                   key={product.id} 
-                  to={`/products/${product.handle}`}
+                  to={`${getPrefix?.pathPrefix ? getPrefix?.pathPrefix : ''}/products/${product.handle}`}
                   className="group relative flex-none w-[calc((100vw-32px)/2)] md:w-[calc((100vw-48px)/4)] snap-start"
                 >
                   <div className="relative aspect-[2/3] overflow-hidden bg-gray-100">

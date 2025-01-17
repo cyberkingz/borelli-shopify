@@ -1,11 +1,12 @@
-import { Link } from '@remix-run/react';
+import { Link, useMatches } from '@remix-run/react';
 import { Suspense } from 'react';
 import heroImage from '../assets/hero-banner.png';
 import { useTranslation } from '~/hooks/useTranslation';
+import { useLocale } from './UseLocale';
 
 export function Hero() {
+  const getPrefix = useLocale();
   const {t} = useTranslation();
-
   return (
     <Suspense fallback={<div className="h-[600px] bg-black" />}>
       <section className="relative h-[600px] w-full home-hero">
@@ -36,7 +37,7 @@ export function Hero() {
                 {/* Button Section */}
                 <div className="w-full flex [&>*]:mx-auto sm:[&>*]:ml-0">
                   <Link
-                    to="/collections/best-selling"
+                    to={`${getPrefix?.pathPrefix ? getPrefix?.pathPrefix: ''}/collections/best-selling`}
                     className="border border-white text-white px-8 py-3 uppercase transition-colors"
                   >
                     {t('hero.cta')}
