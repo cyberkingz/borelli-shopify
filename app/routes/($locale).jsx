@@ -32,6 +32,7 @@ export const action = async ({request, context}) => {
   }
 
   const cartId = await context.cart.getCartId();
+  console.log(cartId);
   // Update the cart buyer's country code if there is a cart ID
   if (cartId) {
     await updateCartBuyerIdentity(context, {

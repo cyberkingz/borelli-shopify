@@ -2,6 +2,7 @@ import {useNavigate, useSearchParams} from '@remix-run/react';
 import sizeFinderIcon from '../assets/size.png';
 import {useState, useRef, useEffect} from 'react';
 import {SizeFinder} from './SizeFinder';
+import {useTranslation} from '~/hooks/useTranslation';
 
 /**
  * Product options selector component
@@ -101,16 +102,12 @@ export function ProductOptions({
             </div>
             {option.name.toLowerCase() === 'size' || option.name.toLowerCase() === 'größe' || option.name.toLowerCase() === 'taille' && (
               <div className="flex items-center gap-2 text-sm">
-                <img 
-                  src={sizeFinderIcon} 
-                  alt="Size Guide" 
-                  className="w-4 h-4"
-                />
+                 <img src={sizeFinderIcon} alt={t('product.size.guide')} className="w-4 h-4 mr-1" />
                 <button 
                   className="underline"
                   onClick={() => setIsSizeFinderOpen(true)}
                 >
-                  Size Finder
+                   {t('product.size.guide')}
                 </button>
               </div>
             )}
@@ -249,7 +246,18 @@ function ColorSwatch({name, handle, selected, available, onClick, customColor, s
     'brown': '#8B4513',
     'fog blue': '#CDE3F7',
     'marine blue': '#003366',
-    'dark gray': '#505050'
+    'dark gray': '#505050',
+    'marine blau': '#003366',
+    'black': '#000000',
+    'red': '#FF0000',
+    'blue': '#0000FF',
+    'schwarz': '#000000',
+    'weiß': '#FFFFFF',
+    'rot': '#FF0000',
+    'blau': '#0000FF',
+    'ozeanblau': '#4B9CD3',
+    'braun': '#8B4513',
+    'karamell': '#C68E17'
     // Add more colors as needed
   };
   
