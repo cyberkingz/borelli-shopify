@@ -246,7 +246,8 @@ function ColorSwatch({name, handle, selected, available, onClick, customColor, s
     'brown': '#8B4513',
     'fog blue': '#CDE3F7',
     'marine blue': '#003366',
-    'dark gray': '#505050'
+    'dark gray': '#505050',
+    'marine blau': '#003366'
     // Add more colors as needed
   };
   
