@@ -7,28 +7,6 @@ import {countries} from '~/data/countries';
 /**
  * @param {LoaderFunctionArgs}
  */
-export async function loader({params, context}) {
-  const {language, country} = context.storefront.i18n;
-  const allowedMarkets = getAllowedMarkets();
-  const currentLocale = params.locale || '';
-  
-  // Handle default market (UK)
-  if (isDefaultMarket(currentLocale)) {
-    return null; // Allow access to root without locale
-  }
-
-  if (
-    params.locale &&
-    params.locale.toLowerCase() !== `${language}-${country}`.toLowerCase()
-  ) {
-    // If the locale URL param is defined, but it does not match the current locale,
-    // then the locale param is invalid, so send the user to the 404 page.
-    throw new Response(null, {status: 404});
-  }
-
-  return null;
-}
-
 export const action = async ({request, context}) => {
   const {session, cart} = context;
   const formData = await request.formData();
@@ -95,7 +73,7 @@ async function updateCartBuyerIdentity({ storefront, session }, { cartId, buyerI
     if (!cart) {
       throw new Error('Cart is undefined');
     }
-
+    console.log(cart);
     return cart;
 
   } catch (error) {
