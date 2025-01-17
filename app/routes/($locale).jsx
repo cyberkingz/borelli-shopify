@@ -1,5 +1,3 @@
-import {getAllowedMarkets, isDefaultMarket} from '~/config/markets';
-import {redirectToLocale} from '~/lib/market';
 import {redirect} from '@shopify/remix-oxygen';
 import invariant from 'tiny-invariant';
 import {countries} from '~/data/countries';
@@ -7,53 +5,29 @@ import {countries} from '~/data/countries';
 /**
  * @param {LoaderFunctionArgs}
  */
-export const action = async ({request, context}) => {
-  const {session, cart} = context;
-  const formData = await request.formData();
-
+export async function loader({params, context}) {
+  const currentLocale = params.locale || '';
+  const toLocale = countries[`${currentLocale}`.toLowerCase()] || countries.default;
   // Ensure the form request is valid
-  const languageCode = formData.get('language');
+  const languageCode = toLocale.language;
+  const countryCode = toLocale.country;
+ 
   invariant(languageCode, 'Missing language');
-
-  const countryCode = formData.get('country');
   invariant(countryCode, 'Missing country');
 
-  // Determine the path to redirect to relative to where the user navigated from
-  const path = formData.get('path') || '/';  // Default to '/' if no path is provided
-
-  const toLocale = countries[`${languageCode}-${countryCode}`.toLowerCase()] || countries.default;
-  if (!toLocale) {
-    throw new Error(`Locale not found for language: ${languageCode}, country: ${countryCode}`);
-  }
-
-  // Ensure the host is valid for the selected locale
-  if (!toLocale.host) {
-    throw new Error('Host is undefined for the selected locale');
-  }
-
   const cartId = await context.cart.getCartId();
-  console.log(cartId);
   // Update the cart buyer's country code if there is a cart ID
   if (cartId) {
     await updateCartBuyerIdentity(context, {
       cartId,
       buyerIdentity: {
-        countryCode,
+        countryCode: countryCode,
       },
     });
   }
 
-  /// Check if the environment is local
-  const isLocal = request.url.includes('localhost');
-
-  // Construct the redirect URL
-  const redirectUrl = new URL(
-    `${toLocale.pathPrefix || ''}${path}`,
-    isLocal ? `http://localhost:3000` : `https://${toLocale.host}` // Use `localhost` for local development
-  );
-
-  return redirect(redirectUrl, 302);
-};
+  return null;
+}
 
 async function updateCartBuyerIdentity({ storefront, session }, { cartId, buyerIdentity }) {
   try {
@@ -74,14 +48,13 @@ async function updateCartBuyerIdentity({ storefront, session }, { cartId, buyerI
     if (!cart) {
       throw new Error('Cart is undefined');
     }
-    console.log(cart);
     return cart;
 
   } catch (error) {
     console.error(error);
 
     // If error occurs, redirect to default domain
-    const defaultHost = 'barkerlondon.com'; // Set default domain
+    const defaultHost = import.meta.env.PUBLIC_STORE_DOMAIN; // Set default domain
     const defaultPath = '/'; // Optionally, set a default path
     const redirectUrl = new URL(defaultPath, `https://${defaultHost}`);
 

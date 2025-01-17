@@ -21,6 +21,17 @@ export const MARKETS = {
     isDefault: false,
     pathPrefix: 'de-de', // German prefix
   },
+  'fr-fr': {
+    label: 'France',
+    language: 'FR',
+    currency: 'EUR',
+    domain: import.meta.env.PUBLIC_STORE_DOMAIN,
+    storeDomain: import.meta.env.PUBLIC_STORE_DOMAIN,
+    countryCode: 'FR',
+    defaultLocale: 'fr-fr',
+    isDefault: false,
+    pathPrefix: 'fr-fr', // German prefix
+  },
 };
 
 export const DEFAULT_MARKET = 'default';

@@ -256,8 +256,10 @@ function ColorSwatch({name, handle, selected, available, onClick, customColor, s
     'rot': '#FF0000',
     'blau': '#0000FF',
     'ozeanblau': '#4B9CD3',
+    'ocean blue': '#4B9CD3',
     'braun': '#8B4513',
-    'karamell': '#C68E17'
+    'karamell': '#C68E17',
+    'caramel': '#C68E17'
     // Add more colors as needed
   };
   
