@@ -45,7 +45,7 @@ export function ProductOptions({
 
   if (option.optionValues.length === 1) return null;
 
-  const isSize = option.name.toLowerCase() === 'size' || option.name.toLowerCase() === 'shoe size';
+  const isSize = option.name.toLowerCase() === 'size' || option.name.toLowerCase() === 'shoe size' || option.name.toLowerCase() === 'größe' || option.name.toLowerCase() === 'taille';
   const showDropdown = isSize && option.optionValues.length > 4;
 
   const handleOptionChange = (optionName, optionValue) => {
@@ -55,7 +55,7 @@ export function ProductOptions({
       }
       return item;
     });      
-   
+
     setSingleSelectedOptions(NewValues);
 
     const normalizedNewValues = JSON.stringify(NewValues).replace(/\s+/g, '').toLowerCase();
@@ -84,7 +84,7 @@ export function ProductOptions({
   return (
     <div className="grid gap-0">
       <div className="flex flex-col gap-2">
-        {option.name.toLowerCase() === 'color' ? (
+        {option.name.toLowerCase() === 'color' || option.name.toLowerCase() === 'farbe' || option.name.toLowerCase() === 'couleur' ? (
           <div className="flex items-center">
             <span className="font-semibold uppercase min-w-[60px]">{option.name}:</span>
             <span className="text-sm text-gray-600 leading-none ml-2">
@@ -99,7 +99,7 @@ export function ProductOptions({
                 {singleSelectedVariant?.selectedOptions[1]?.value}
               </span>
             </div>
-            {option.name.toLowerCase() === 'size' && (
+            {option.name.toLowerCase() === 'size' || option.name.toLowerCase() === 'größe' || option.name.toLowerCase() === 'taille' && (
               <div className="flex items-center gap-2 text-sm">
                 <img 
                   src={sizeFinderIcon} 
@@ -126,7 +126,7 @@ export function ProductOptions({
         <div className="flex flex-wrap items-center gap-2">
           {option.optionValues.map((opt, index) => {
             const isSelected = searchParams.get(option.name) === opt.name;
-            const isColor = option.name.toLowerCase() === 'color';
+            const isColor = option.name.toLowerCase() === 'color' || option.name.toLowerCase() === 'farbe' || option.name.toLowerCase() === 'couleur';
 
             if (isColor) {
               const colorMetafield = product?.metafields?.find(
@@ -249,11 +249,11 @@ function ColorSwatch({name, handle, selected, available, onClick, customColor, s
     'brown': '#8B4513',
     'fog blue': '#CDE3F7',
     'marine blue': '#003366',
+    'dark gray': '#505050'
     // Add more colors as needed
   };
   
   const colorValue = customColor || colorMap[name.toLowerCase()] || name.toLowerCase();
-  
   return (
     <button
       title={name}

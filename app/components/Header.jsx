@@ -74,7 +74,7 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
           />
         </div>
         <div className="w-[250px] flex justify-end items-center">
-          <CountrySwitcher />    
+          {/* <CountrySwitcher />     */}
           <CartToggle cart={cart} />
         </div>
       </div>
