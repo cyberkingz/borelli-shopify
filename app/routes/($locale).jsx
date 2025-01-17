@@ -7,7 +7,7 @@ import {countries} from '~/data/countries';
 /**
  * @param {LoaderFunctionArgs}
  */
-export async function loader({params, context, request}) {
+export async function loader({params, context}) {
   const {language, country} = context.storefront.i18n;
   const allowedMarkets = getAllowedMarkets();
   const currentLocale = params.locale || '';
@@ -30,7 +30,7 @@ export async function loader({params, context, request}) {
 }
 
 export const action = async ({request, context}) => {
-  const {session} = context;
+  const {session, cart} = context;
   const formData = await request.formData();
 
   // Ensure the form request is valid
@@ -53,8 +53,7 @@ export const action = async ({request, context}) => {
     throw new Error('Host is undefined for the selected locale');
   }
 
-  const cartId = await session.get('cartId');
-
+  const cartId = await context.cart.getCartId();
   // Update the cart buyer's country code if there is a cart ID
   if (cartId) {
     await updateCartBuyerIdentity(context, {
