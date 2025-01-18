@@ -1,4 +1,3 @@
-import {useOptimisticCart} from '@shopify/hydrogen';
 import {Link} from '@remix-run/react';
 import {useAside} from '~/components/Aside';
 import {CartLineItem} from '~/components/CartLineItem';
@@ -10,8 +9,7 @@ import {useTranslation} from '~/hooks/useTranslation';
  * It is used by both the /cart route and the cart aside dialog.
  * @param {CartMainProps}
  */
-export function CartMain({layout, cart: originalCart}) {
-  const cart = useOptimisticCart(originalCart);
+export function CartMain({layout, cart}) {
   const linesCount = Boolean(cart?.lines?.nodes?.length || 0);
   const withDiscount = cart && Boolean(cart?.discountCodes?.filter((code) => code.applicable)?.length);
   const className = `cart-main ${withDiscount ? 'with-discount' : ''}`;
