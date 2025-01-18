@@ -46,7 +46,7 @@ export function ProductOptions({
 
   if (option.optionValues.length === 1) return null;
 
-  const isSize = option.name.toLowerCase() === 'size' || option.name.toLowerCase() === 'shoe size' || option.name.toLowerCase() === 'größe' || option.name.toLowerCase() === 'taille';
+  const isSize = option.name.toLowerCase() === 'size' || option.name.toLowerCase() === 'shoe size' || option.name.toLowerCase() === 'größe' || option.name.toLowerCase() === 'taille' || option.name.toLocaleLowerCase() === 'pointure';
   const showDropdown = isSize && option.optionValues.length > 4;
 
   const handleOptionChange = (optionName, optionValue) => {
@@ -100,7 +100,7 @@ export function ProductOptions({
                 {singleSelectedVariant?.selectedOptions[1]?.value}
               </span>
             </div>
-            {option.name.toLowerCase() === 'size' || option.name.toLowerCase() === 'größe' || option.name.toLowerCase() === 'taille' && (
+            {option.name.toLowerCase() === 'size' || option.name.toLowerCase() === 'größe' || option.name.toLowerCase() === 'taille' || option.name.toLocaleLowerCase() === 'pointure' && (
               <div className="flex items-center gap-2 text-sm">
                  <img src={sizeFinderIcon} alt={t('product.size.guide')} className="w-4 h-4 mr-1" />
                 <button 
