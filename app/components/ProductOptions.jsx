@@ -26,7 +26,7 @@ export function ProductOptions({
   const [isOpen, setIsOpen] = useState(false);
   const [isSizeFinderOpen, setIsSizeFinderOpen] = useState(false);
   const dropdownRef = useRef(null);
-
+  const {t} = useTranslation();
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -259,7 +259,12 @@ function ColorSwatch({name, handle, selected, available, onClick, customColor, s
     'ocean blue': '#4B9CD3',
     'braun': '#8B4513',
     'karamell': '#C68E17',
-    'caramel': '#C68E17'
+    'caramel': '#C68E17',
+    'bleu marine':'#003366',
+    'bleu': '#0000FF',
+    'bleu océan': '#4B9CD3',
+    'brun': '#8B4513',
+    'noir': '#000000',
     // Add more colors as needed
   };
   
